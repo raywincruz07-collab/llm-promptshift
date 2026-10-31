@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-OUTPUT = Path("figures")
+OUTPUT = Path(__file__).resolve().parents[2] / "figures"
 OUTPUT.mkdir(exist_ok=True)
 
-df = pd.read_csv("data/test_f1_confidence.csv")
+df = pd.read_csv(str(Path(__file__).resolve().parents[2] / "data" / "test_f1_confidence.csv"))
 
 models = ["gemma4-26b", "qwen3.6-36b", "llama-3.3-70b"]
 labels = ["gemma4-26b", "qwen3.6-36b", "llama-3.3-70b"]

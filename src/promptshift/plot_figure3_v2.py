@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import pandas as pd
 
-OUT = Path("figures")
+OUT = Path(__file__).resolve().parents[2] / "figures"
 OUT.mkdir(exist_ok=True)
 
-df = pd.read_csv("data/test_metrics.csv")
+df = pd.read_csv(str(Path(__file__).resolve().parents[2] / "data" / "test_metrics.csv"))
 
 models = {
     "gemma4-26b": "gemma4-26b",

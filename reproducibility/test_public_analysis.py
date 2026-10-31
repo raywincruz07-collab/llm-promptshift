@@ -11,6 +11,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 REPRO = ROOT / "reproducibility"
 ARTIFACTS = ROOT / "artifacts" / "predictions"
+SOURCE = ROOT / "src" / "promptshift"
 
 ANALYSIS = [
     "analyze_pilot.py",
@@ -37,7 +38,7 @@ def execute(script, directory):
     print(f"RUNNING: {script}", flush=True)
 
     subprocess.run(
-        [sys.executable, str(directory / script)],
+        [sys.executable, str(directory / "src" / "promptshift" / script)],
         cwd=directory,
         check=True,
         stdout=subprocess.DEVNULL,
@@ -79,6 +80,8 @@ def main():
         shutil.copy2(source, data_dir / filename)
 
     # Copy code needed to reproduce numerical analysis.
+    workspace_source = workspace / "src" / "promptshift"
+    workspace_source.mkdir(parents=True)
     scripts = (
         ANALYSIS
         + ["prepare_repeatability.py", "prompts.py"]
@@ -86,8 +89,8 @@ def main():
 
     for filename in scripts:
         shutil.copy2(
-            ROOT / filename,
-            workspace / filename,
+            SOURCE / filename,
+            workspace_source / filename,
         )
 
     # Reconstruct repeatability request metadata.

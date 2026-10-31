@@ -12,7 +12,7 @@ import pandas as pd
 from openai import OpenAI
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 REQUESTS_PATH = ROOT / "data" / "main_requests.parquet"
 OUTPUT_PATH = ROOT / "data" / "main_predictions.jsonl"
 

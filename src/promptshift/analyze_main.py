@@ -1,15 +1,18 @@
-"""Analyze the IS6170 pilot experiment."""
+"""Analyze the IS6170 main prompt-robustness experiment."""
 
 from pathlib import Path
 
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 
-PREDICTIONS = ROOT / "data" / "pilot_predictions.jsonl"
-PILOT = ROOT / "data" / "pilot12.parquet"
+PREDICTIONS = ROOT / "data" / "main_predictions.jsonl"
+DATASET = ROOT / "data" / "main300.parquet"
+
+METRICS_OUTPUT = ROOT / "data" / "main_metrics.csv"
+FLIPS_OUTPUT = ROOT / "data" / "main_flips.csv"
 
 MODELS = [
     "gemma4-26b",
@@ -27,11 +30,11 @@ LABEL_MAP = {
 
 def main():
     predictions = pd.read_json(PREDICTIONS, lines=True)
-    pilot = pd.read_parquet(PILOT)
+    dataset = pd.read_parquet(DATASET)
 
-    # Check the experimental data.
-    assert len(predictions) == 108
-    assert len(pilot) == 12
+    # Verify the experiment is complete.
+    assert len(predictions) == 2700
+    assert len(dataset) == 300
 
     assert set(predictions["model"]) == set(MODELS)
     assert set(predictions["prompt_id"]) == set(PROMPTS)
@@ -41,6 +44,9 @@ def main():
     ).any()
 
     assert predictions["finish_reason"].eq("stop").all()
+    assert predictions["model"].eq(
+        predictions["response_model"]
+    ).all()
 
     predictions["predicted_label"] = (
         predictions["raw_response"].map(LABEL_MAP)
@@ -48,53 +54,61 @@ def main():
 
     assert predictions["predicted_label"].notna().all()
 
-    # Attach the correct dataset labels.
+    # Attach the dataset's gold-standard labels.
     results = predictions.merge(
-        pilot[["row_id", "label"]],
+        dataset[["row_id", "label"]],
         on="row_id",
         validate="many_to_one",
     )
 
-    assert len(results) == 108
+    assert len(results) == 2700
     assert results["label"].notna().all()
 
     metrics = []
     flips = []
 
     for model in MODELS:
-        model_data = results[results["model"] == model]
+        model_data = results[
+            results["model"] == model
+        ]
 
-        assert len(model_data) == 36
+        assert len(model_data) == 900
 
-        # Compare predictions across prompts.
+        # Compare predictions across all three prompts.
         wide = model_data.pivot(
             index="row_id",
             columns="prompt_id",
             values="predicted_label",
         )
 
-        assert wide.shape == (12, 3)
+        wide = wide[PROMPTS]
+
+        assert wide.shape == (300, 3)
+        assert not wide.isna().any().any()
+
+        any_flip = wide.nunique(axis=1).gt(1)
+
+        p0_p1 = (wide["P0"] != wide["P1"])
+        p0_p2 = (wide["P0"] != wide["P2"])
+        p1_p2 = (wide["P1"] != wide["P2"])
 
         flips.append({
             "model": model,
-            "posts_with_any_flip": int(
-                wide.nunique(axis=1).gt(1).sum()
-            ),
-            "total_posts": len(wide),
-            "p0_vs_p1_flips": int(
-                (wide["P0"] != wide["P1"]).sum()
-            ),
-            "p0_vs_p2_flips": int(
-                (wide["P0"] != wide["P2"]).sum()
-            ),
+            "total_posts": 300,
+            "posts_with_any_flip": int(any_flip.sum()),
+            "any_flip_rate": any_flip.mean(),
+            "p0_vs_p1_flips": int(p0_p1.sum()),
+            "p0_vs_p2_flips": int(p0_p2.sum()),
+            "p1_vs_p2_flips": int(p1_p2.sum()),
         })
 
+        # Calculate classification performance for each prompt.
         for prompt_id in PROMPTS:
             subset = model_data[
                 model_data["prompt_id"] == prompt_id
             ]
 
-            assert len(subset) == 12
+            assert len(subset) == 300
 
             y_true = subset["label"]
             y_pred = subset["predicted_label"]
@@ -108,7 +122,10 @@ def main():
             metrics.append({
                 "model": model,
                 "prompt_id": prompt_id,
-                "accuracy": accuracy_score(y_true, y_pred),
+                "accuracy": accuracy_score(
+                    y_true,
+                    y_pred,
+                ),
                 "macro_f1": f1_score(
                     y_true,
                     y_pred,
@@ -120,6 +137,12 @@ def main():
                 "fp": int(fp),
                 "fn": int(fn),
                 "tp": int(tp),
+                "offensive_recall": (
+                    tp / (tp + fn)
+                ),
+                "nonoffensive_recall": (
+                    tn / (tn + fp)
+                ),
                 "median_latency_seconds": subset[
                     "latency_seconds"
                 ].median(),
@@ -128,23 +151,21 @@ def main():
     metrics_df = pd.DataFrame(metrics)
     flips_df = pd.DataFrame(flips)
 
-    metrics_df.to_csv(
-        ROOT / "data" / "pilot_metrics.csv",
-        index=False,
-    )
+    # Save derived analysis without modifying predictions.
+    metrics_df.to_csv(METRICS_OUTPUT, index=False)
+    flips_df.to_csv(FLIPS_OUTPUT, index=False)
 
-    flips_df.to_csv(
-        ROOT / "data" / "pilot_flips.csv",
-        index=False,
-    )
-
-    print("PILOT_ANALYSIS_OK")
+    print("MAIN_ANALYSIS_OK")
 
     print("\nMODEL AND PROMPT METRICS:")
     print(metrics_df.round(3).to_string(index=False))
 
     print("\nPROMPT FLIP ANALYSIS:")
-    print(flips_df.to_string(index=False))
+    print(flips_df.round(3).to_string(index=False))
+
+    print("\nOUTPUT FILES:")
+    print(METRICS_OUTPUT)
+    print(FLIPS_OUTPUT)
 
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@ REPRO = ROOT / "reproducibility"
 CACHE = REPRO / "source_cache"
 OUTPUT = REPRO / "fresh_build"
 
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src" / "promptshift"))
 from prompts import PROMPTS, render_prompt
 
 REPOSITORY = "cardiffnlp/tweet_eval"

@@ -12,7 +12,7 @@ import pandas as pd
 from openai import OpenAI
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 REQUESTS_PATH = ROOT / "data" / "test_requests.parquet"
 OUTPUT_PATH = ROOT / "data" / "test_predictions.jsonl"
 
@@ -47,7 +47,7 @@ def main():
     assert TEMPERATURE == protocol["inference"]["temperature"]
     assert MAX_TOKENS == protocol["inference"]["max_tokens"]
     assert (
-        hashlib.sha256((ROOT / "prompts.py").read_bytes()).hexdigest()
+        hashlib.sha256((ROOT / "src" / "promptshift" / "prompts.py").read_bytes()).hexdigest()
         == protocol["file_sha256"]["prompts.py"]
     )
 

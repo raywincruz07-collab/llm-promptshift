@@ -6,13 +6,13 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 
-PREDICTIONS = ROOT / "data" / "main_predictions.jsonl"
-DATASET = ROOT / "data" / "main300.parquet"
+PREDICTIONS = ROOT / "data" / "test_predictions.jsonl"
+DATASET = ROOT / "data" / "test860.parquet"
 
-METRICS_OUTPUT = ROOT / "data" / "main_metrics.csv"
-FLIPS_OUTPUT = ROOT / "data" / "main_flips.csv"
+METRICS_OUTPUT = ROOT / "data" / "test_metrics.csv"
+FLIPS_OUTPUT = ROOT / "data" / "test_flips.csv"
 
 MODELS = [
     "gemma4-26b",
@@ -33,8 +33,8 @@ def main():
     dataset = pd.read_parquet(DATASET)
 
     # Verify the experiment is complete.
-    assert len(predictions) == 2700
-    assert len(dataset) == 300
+    assert len(predictions) == 7740
+    assert len(dataset) == 860
 
     assert set(predictions["model"]) == set(MODELS)
     assert set(predictions["prompt_id"]) == set(PROMPTS)
@@ -61,7 +61,7 @@ def main():
         validate="many_to_one",
     )
 
-    assert len(results) == 2700
+    assert len(results) == 7740
     assert results["label"].notna().all()
 
     metrics = []
@@ -72,7 +72,7 @@ def main():
             results["model"] == model
         ]
 
-        assert len(model_data) == 900
+        assert len(model_data) == 2580
 
         # Compare predictions across all three prompts.
         wide = model_data.pivot(
@@ -83,7 +83,7 @@ def main():
 
         wide = wide[PROMPTS]
 
-        assert wide.shape == (300, 3)
+        assert wide.shape == (860, 3)
         assert not wide.isna().any().any()
 
         any_flip = wide.nunique(axis=1).gt(1)
@@ -94,7 +94,7 @@ def main():
 
         flips.append({
             "model": model,
-            "total_posts": 300,
+            "total_posts": 860,
             "posts_with_any_flip": int(any_flip.sum()),
             "any_flip_rate": any_flip.mean(),
             "p0_vs_p1_flips": int(p0_p1.sum()),
@@ -108,7 +108,7 @@ def main():
                 model_data["prompt_id"] == prompt_id
             ]
 
-            assert len(subset) == 300
+            assert len(subset) == 860
 
             y_true = subset["label"]
             y_pred = subset["predicted_label"]
@@ -155,7 +155,7 @@ def main():
     metrics_df.to_csv(METRICS_OUTPUT, index=False)
     flips_df.to_csv(FLIPS_OUTPUT, index=False)
 
-    print("MAIN_ANALYSIS_OK")
+    print("TEST_ANALYSIS_OK")
 
     print("\nMODEL AND PROMPT METRICS:")
     print(metrics_df.round(3).to_string(index=False))

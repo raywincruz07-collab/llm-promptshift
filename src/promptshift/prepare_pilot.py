@@ -8,7 +8,7 @@ import pandas as pd
 from prompts import PROMPTS, render_prompt
 
 
-PROJECT_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = Path(__file__).resolve().parents[2]
 PILOT_PATH = PROJECT_DIR / "data" / "pilot12.parquet"
 OUTPUT_PATH = PROJECT_DIR / "data" / "pilot_requests.parquet"
 

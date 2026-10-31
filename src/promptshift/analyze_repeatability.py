@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
 
 SELECTED_POSTS = [193, 519, 929, 1247]

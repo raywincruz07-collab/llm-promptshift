@@ -52,8 +52,9 @@ No inter-annotator reliability claim is made.
 Run:
 
 ```bash
-python reproducibility/document_qualitative.py
+python reproducibility/test_public_analysis.py
 ```
 
-This script verifies the preserved qualitative artifacts
-against the archived validation flip cases.
+This script reconstructs the archived datasets and verifies the numerical analysis.
+The qualitative case notes on this page remain historical documentation;
+there is no separate qualitative verification script in this repository.

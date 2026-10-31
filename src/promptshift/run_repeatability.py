@@ -13,7 +13,7 @@ import pandas as pd
 from openai import OpenAI
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
 
 INPUT = DATA / "repeatability_requests.parquet"

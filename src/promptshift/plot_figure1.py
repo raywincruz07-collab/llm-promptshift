@@ -5,11 +5,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-FIGURES = Path("figures")
+FIGURES = Path(__file__).resolve().parents[2] / "figures"
 FIGURES.mkdir(exist_ok=True)
 
-validation = pd.read_csv("data/main_flip_confidence.csv")
-test = pd.read_csv("data/test_flip_confidence.csv")
+validation = pd.read_csv(str(Path(__file__).resolve().parents[2] / "data" / "main_flip_confidence.csv"))
+test = pd.read_csv(str(Path(__file__).resolve().parents[2] / "data" / "test_flip_confidence.csv"))
 
 models = ["gemma4-26b", "qwen3.6-36b", "llama-3.3-70b"]
 labels = ["gemma4-26b", "qwen3.6-36b", "llama-3.3-70b"]

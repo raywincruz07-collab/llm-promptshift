@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
 
 MODELS = ["gemma4-26b", "qwen3.6-36b", "llama-3.3-70b"]
@@ -39,14 +39,14 @@ def confidence_interval(values):
 
 
 def main():
-    posts = pd.read_parquet(DATA / "test860.parquet")
+    posts = pd.read_parquet(DATA / "main300.parquet")
     predictions = pd.read_json(
-        DATA / "test_predictions.jsonl",
+        DATA / "main_predictions.jsonl",
         lines=True,
     )
 
-    assert len(posts) == 860
-    assert len(predictions) == 7740
+    assert len(posts) == 300
+    assert len(predictions) == 2700
 
     predictions["predicted"] = predictions[
         "raw_response"
@@ -70,7 +70,7 @@ def main():
         columns=columns,
     )
 
-    assert wide.shape == (860, 9)
+    assert wide.shape == (300, 9)
     assert not wide.isna().any().any()
 
     y = posts.set_index("row_id").loc[
@@ -79,8 +79,8 @@ def main():
 
     x = wide.to_numpy(dtype=int)
 
-    assert np.sum(y == 0) == 620
-    assert np.sum(y == 1) == 240
+    assert np.sum(y == 0) == 196
+    assert np.sum(y == 1) == 104
 
     # Each row represents one post.
     # Each column represents one model-prompt combination.
@@ -216,19 +216,19 @@ def main():
     model_delta_df = pd.DataFrame(model_delta_rows)
 
     flip_df.to_csv(
-        DATA / "test_flip_confidence.csv", index=False
+        DATA / "main_flip_confidence.csv", index=False
     )
     f1_df.to_csv(
-        DATA / "test_f1_confidence.csv", index=False
+        DATA / "main_f1_confidence.csv", index=False
     )
     delta_df.to_csv(
-        DATA / "test_f1_differences.csv", index=False
+        DATA / "main_f1_differences.csv", index=False
     )
     model_delta_df.to_csv(
-        DATA / "test_model_flip_differences.csv", index=False
+        DATA / "main_model_flip_differences.csv", index=False
     )
 
-    print("TEST_UNCERTAINTY_OK")
+    print("MAIN_UNCERTAINTY_OK")
 
     print("\nPROMPT-FLIP RATE CONFIDENCE INTERVALS:")
     print(flip_df.round(4).to_string(index=False))
