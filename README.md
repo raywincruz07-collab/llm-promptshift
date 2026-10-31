@@ -116,7 +116,7 @@ python3.12 --version
 Replace the placeholders with the actual repository URL and directory **after the project has been published**:
 
 ```bash
-git clone https://github.com/OWNER/REPOSITORY.git
+git clone https://github.com/raywincruz07-collab/is617-prompt-robustness.git
 cd REPOSITORY
 python3.12 -m venv .venv
 source .venv/bin/activate
@@ -161,7 +161,7 @@ reproduced_outputs/
 └── figures/      # Three figures, each in PNG and PDF
 ```
 
-**Important verification boundary:** The workflow was successfully tested in the original workspace using a separately installed environment and a temporary workspace with no original `data/` directory. The curated release directory has now passed reproduction using a fresh Python 3.12 environment, downloaded source data, and archived predictions. A separate clean Git clone test is still pending. The first run may download public dataset files; it is not fully offline without that cache. It makes **zero LLM inference calls**.
+**Important verification boundary:** The workflow was successfully tested in the original workspace using a separately installed environment and a temporary workspace with no original `data/` directory. The curated release directory has now passed reproduction using a fresh Python 3.12 environment, downloaded source data, and archived predictions. A separate clean Git clone test also passed successfully. The first run may download public dataset files; it is not fully offline without that cache. It makes **zero LLM inference calls**.
 
 ### D. Figures
 
@@ -240,5 +240,5 @@ Dataset: CardiffNLP TweetEval `offensive`. The dataset and underlying tweet cont
 
 - **Verified in the original project:** saved metrics, uncertainty tables, reconstructed inputs, fresh Python environment, and public-data + archived-prediction analysis (including three figure pairs).
 - **Verified in the curated release directory:** fresh dependency installation, reconstruction, numerical analysis, 17 exported tables, and six figure files.
-- **Still pending:** clean Git-clone test, final staged-file audit, contributor authorization, and artifact redistribution review.
+- **Still pending:** contributor authorization and artifact redistribution review before public publication.
 - **Not guaranteed:** exact reproduction of fresh hosted LLM inference when the server checkpoint or infrastructure differs.
