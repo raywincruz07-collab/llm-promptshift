@@ -1,0 +1,55 @@
+# Python virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Credentials and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# Original experimental data and raw predictions
+/data/
+
+# Logs and local execution artifacts
+/logs/
+*.log
+
+# Downloaded and reconstructed datasets
+/reproducibility/source_cache/
+/reproducibility/fresh_build/
+/reproducibility/rebuilt_samples/
+/reproducibility/rebuilt_requests/
+/reproducibility/rebuilt_results/
+
+# Local notebooks and editor files
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Temporary archives
+*.zip
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.bak
+
+# Locally regenerated research outputs
+/reproduced_outputs/

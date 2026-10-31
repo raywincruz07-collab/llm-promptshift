@@ -1,0 +1,32 @@
+{
+  "captured_at_utc": "2026-10-31T16:23:38.417580+00:00",
+  "endpoint": "https://maki.uni-mannheim.de/v1",
+  "requested_model_aliases": [
+    "gemma4-26b",
+    "qwen3.6-36b",
+    "llama-3.3-70b"
+  ],
+  "model_metadata": {
+    "gemma4-26b": {
+      "id": "gemma4-26b",
+      "created": 1677610602,
+      "object": "model",
+      "owned_by": "openai",
+      "max_input_tokens": 131072
+    },
+    "qwen3.6-36b": {
+      "id": "qwen3.6-36b",
+      "created": 1677610602,
+      "object": "model",
+      "owned_by": "openai",
+      "max_input_tokens": 262144
+    },
+    "llama-3.3-70b": {
+      "id": "llama-3.3-70b",
+      "created": 1677610602,
+      "object": "model",
+      "owned_by": "openai",
+      "max_input_tokens": 32768
+    }
+  }
+}

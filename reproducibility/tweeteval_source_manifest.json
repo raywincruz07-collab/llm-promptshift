@@ -1,0 +1,23 @@
+{
+  "repository": "cardiffnlp/tweet_eval",
+  "revision": "b3a375baf0f409c77e6bc7aa35102b7b3534f8be",
+  "configuration": "offensive",
+  "splits": {
+    "validation": {
+      "source_file": "validation-00000-of-00001.parquet",
+      "source_sha256": "1161b4e6cc7cbdaa667d4fc131f9be0ea3db755616126329dda7eb521cd88c36",
+      "experiment_file_sha256": "1161b4e6cc7cbdaa667d4fc131f9be0ea3db755616126329dda7eb521cd88c36",
+      "rows": 1324,
+      "content_and_order_verified": true,
+      "transformation": "none"
+    },
+    "test": {
+      "source_file": "test-00000-of-00001.parquet",
+      "source_sha256": "15b87adaf1850d8e3e104be6240255813d48d776940be546ad353fee9fcfb099",
+      "experiment_file_sha256": "f600a50b80d634ad8aeab6efee8a6322ec0d0c56a3317bf2204b625f4f20fb24",
+      "rows": 860,
+      "content_and_order_verified": true,
+      "transformation": "per-row trailing whitespace"
+    }
+  }
+}
