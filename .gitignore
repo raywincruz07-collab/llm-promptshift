@@ -1,0 +1,15 @@
+# Data, requests, predictions with post text, results (regenerated)
+/data/
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+# Secrets
+.env
+.env.*
+*.key
+# Anything that contains post text
+*CONTAINS_TWEET_TEXT*
+.DS_Store
