@@ -1,0 +1,13 @@
+{
+  "created_utc": "2026-11-18T16:21:19.806561+00:00",
+  "sample": "main",
+  "seed": 20261125,
+  "eligible_posts": 672,
+  "selected_posts": 200,
+  "min_content_tokens": 12,
+  "n_requests": 1200,
+  "selected_row_ids_sha256": "06649015e52758c90a8222e45081670591a4cbdf02d531b1695cc4c0c89b504c",
+  "requests_file_sha256": "91ff3a14d6b8c79b63d5d662e0b211d09ce397f24402a08694932ff04fc96296",
+  "general_template_sha256": "94985f327a3a526a029e31647d523abf438d845256c5369c4fcd0648aa6451cd",
+  "guided_template_sha256": "bfd0b548293be1d5bf11da3b04dc5c1f4700a88670e356529717b1dd7027e728"
+}

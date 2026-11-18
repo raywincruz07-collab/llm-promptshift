@@ -1,0 +1,54 @@
+{
+  "definition_block": "Use these definitions:\nOFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct.\nNOT_OFFENSIVE: Posts that do not contain offense or profanity.",
+  "definition_block_sha256": "eaa2e2eb463329b2aa79ab0bd5c1c79a00f678fa4cc995d15277e3fcf42dbc3d",
+  "conditions": {
+    "W0": {
+      "wording": "P0",
+      "has_definition": false,
+      "template": "Does the following social-media post contain offensive language?\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0"
+    },
+    "W1": {
+      "wording": "P1",
+      "has_definition": false,
+      "template": "Determine whether offensive language is present in the following social-media post.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "b5c24e0ba048255fd343b0db920204f7230ee6f7c6f3d9a92fac8fbca42fef2f"
+    },
+    "W2": {
+      "wording": "P2",
+      "has_definition": false,
+      "template": "Classify the following social-media post based on whether it contains offensive language.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "850011b9fc6b9c853ae82da3f2a049825e1b40430ed99e4157eaf712132b9154"
+    },
+    "D0": {
+      "wording": "P0",
+      "has_definition": true,
+      "template": "Does the following social-media post contain offensive language?\n\nUse these definitions:\nOFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct.\nNOT_OFFENSIVE: Posts that do not contain offense or profanity.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00"
+    },
+    "D1": {
+      "wording": "P1",
+      "has_definition": true,
+      "template": "Determine whether offensive language is present in the following social-media post.\n\nUse these definitions:\nOFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct.\nNOT_OFFENSIVE: Posts that do not contain offense or profanity.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "2e58515ebca6c7fad8db7cb5fc9197aa3ccc664d728e007608f85667ab274e16"
+    },
+    "D2": {
+      "wording": "P2",
+      "has_definition": true,
+      "template": "Classify the following social-media post based on whether it contains offensive language.\n\nUse these definitions:\nOFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct.\nNOT_OFFENSIVE: Posts that do not contain offense or profanity.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "70496673f06d931afa9d61109587a7953af271a7e26ac622f3130a3628863cc4"
+    },
+    "R0": {
+      "wording": "P0",
+      "has_definition": false,
+      "template": "Does the following social-media post contain offensive language?\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0"
+    },
+    "RD0": {
+      "wording": "P0",
+      "has_definition": true,
+      "template": "Does the following social-media post contain offensive language?\n\nUse these definitions:\nOFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct.\nNOT_OFFENSIVE: Posts that do not contain offense or profanity.\n\nPost: \"{text}\"\n\nAnswer with exactly one label:\nOFFENSIVE or NOT_OFFENSIVE.",
+      "template_sha256": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00"
+    }
+  }
+}

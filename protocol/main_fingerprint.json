@@ -1,0 +1,56 @@
+{
+  "created_utc": "2026-11-18T16:21:19.392833+00:00",
+  "git": {
+    "commit": "d433c981c59725d0e0fcb7b9bdb90cc43e762df3",
+    "dirty": true
+  },
+  "stage": "main",
+  "dataset": {
+    "repo": "cardiffnlp/tweet_eval",
+    "revision": "b3a375baf0f409c77e6bc7aa35102b7b3534f8be",
+    "split": "test"
+  },
+  "n_posts": 860,
+  "label_counts": {
+    "NOT_OFFENSIVE": 620,
+    "OFFENSIVE": 240
+  },
+  "sample_row_ids_sha256": "1770e7120f04bd49f175b5ff41f0a4da8a97241e53cd58f2242e869fafafaf07",
+  "models": [
+    "gemma4-26b",
+    "qwen3.6-36b",
+    "llama-3.3-70b"
+  ],
+  "conditions": [
+    "W0",
+    "W1",
+    "W2",
+    "D0",
+    "D1",
+    "D2",
+    "R0",
+    "RD0"
+  ],
+  "n_requests": 20640,
+  "shuffle_seed": 20261123,
+  "shuffle_attempts_needed": 1,
+  "requests_file_sha256": "db9ee84913c9302413357605e8ea789264e912f4c62c0e39e67ae5ad2c90b41b",
+  "prompt_registry_sha256": "a7444f2eca2da58e5c6d3458568ed556a727b50f54561ecf436dc303783eb896",
+  "template_sha256": {
+    "W0": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0",
+    "W1": "b5c24e0ba048255fd343b0db920204f7230ee6f7c6f3d9a92fac8fbca42fef2f",
+    "W2": "850011b9fc6b9c853ae82da3f2a049825e1b40430ed99e4157eaf712132b9154",
+    "D0": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00",
+    "D1": "2e58515ebca6c7fad8db7cb5fc9197aa3ccc664d728e007608f85667ab274e16",
+    "D2": "70496673f06d931afa9d61109587a7953af271a7e26ac622f3130a3628863cc4",
+    "R0": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0",
+    "RD0": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00"
+  },
+  "inference": {
+    "temperature": 0,
+    "max_tokens": 16,
+    "request_logprobs": true,
+    "concurrency": 1
+  },
+  "primary_h2": "macro_f1"
+}
