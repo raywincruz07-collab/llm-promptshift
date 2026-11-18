@@ -37,7 +37,7 @@ STAGES = {
 PRIMARY_H2 = "macro_f1"
 
 # Request log probabilities? Set after check_api.py; never change mid-run.
-REQUEST_LOGPROBS = False
+REQUEST_LOGPROBS = True
 
 SHUFFLE_SEED = 20261123
 BOOTSTRAP_SEED = 20261124
