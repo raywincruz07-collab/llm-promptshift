@@ -166,9 +166,9 @@ def test_end_to_end_battery_recovers_planted_effects(tmp_path, monkeypatch):
         client, delay=0, backoff_base=0, request_logprobs=False, quiet=True)
 
     n = K.run_minkprob(client, tmp_path, delay=0)
-    assert n == 2 * len(items)  # Gemma excluded after its first failure
+    assert n == 3 * len(items)  # every item attempted for every model; failures recorded, not fatal
     mink = read_jsonl(tmp_path / "mink_results.jsonl")
-    assert any(r.get("excluded") and r["model"] == "gemma4-26b" for r in mink)
+    assert sum(bool(r.get("failed")) for r in mink if r["model"] == "gemma4-26b") == len(items)
 
     rows = K.analyse(tmp_path)
     get = {(r["probe"], r["group"], r["model"]): r for r in rows}
@@ -184,3 +184,24 @@ def test_end_to_end_battery_recovers_planted_effects(tmp_path, monkeypatch):
     assert 0.3 < get[("P4", "olid_test vs fresh", "qwen3.6-36b")]["estimate"] < 0.7
     summary_md = (tmp_path / "results" / "contam_summary.md").read_text()
     assert "Excluded" in summary_md and "Gemma" in summary_md
+
+
+def test_mink_exclusion_rule(tmp_path):
+    rows = []
+    for i in range(100):
+        rows.append({"model": "qwen3.6-36b", "uid": f"olid_test:{i}", "group": "olid_test",
+                     "min_k_prob": -3.0, **({"failed": True, "min_k_prob": None} if i < 5 else {})})
+        rows.append({"model": "gemma4-26b", "uid": f"olid_test:{i}", "group": "olid_test",
+                     "min_k_prob": -3.0, **({"failed": True, "min_k_prob": None} if i < 30 else {})})
+    write_jsonl(tmp_path / "mink_results.jsonl", rows)
+    scores, excluded, fails = K.p4_scores(tmp_path)
+    assert excluded == ["gemma4-26b"]            # 30% failed -> excluded
+    assert len(scores[("olid_test", "qwen3.6-36b")]) == 95   # 5% failed -> kept
+    assert fails["gemma4-26b"] == (30, 100)
+
+
+def test_parse_letter_long():
+    assert K.parse_letter_long("To determine the original, compare... Therefore, the answer is C.") == "C"
+    assert K.parse_letter_long("Option B looks natural. **D**") == "D"
+    assert K.parse_letter_long("Comparing A and B, I think the original is D") == "D"
+    assert K.parse_letter_long("To determine the original") is None

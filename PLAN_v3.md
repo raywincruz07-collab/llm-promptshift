@@ -83,6 +83,7 @@ Expected power: with 400 fresh posts, the CI half-width for H1 is roughly ±0.01
 - E1: does the definition help more on fresh posts than on OLID (difference-in-differences of macro-F1)?
 - E2: model confidence (log probabilities) for flipped vs stable posts.
 - E3: between-model disagreement on each dataset.
+- E4: flip rate on fresh posts where the two annotators disagreed vs agreed (do models flip on posts humans also find ambiguous?). Replaces the separate 50/50 flip-validation annotation.
 
 ## 7. Contamination evidence battery (OLID train 200, OLID test 200, fresh 400)
 
@@ -91,9 +92,11 @@ Expected power: with 400 fresh posts, the CI half-width for H1 is roughly ±0.01
 | P1 Guided vs general completion (existing) | ROUGE-L guided − general | Evidence if OLID-test gain > fresh gain (CI excludes 0). Within-dataset comparison has no time confound |
 | P2 Near-verbatim review | Completions with ROUGE-L ≥ 0.7 | Specific (non-formulaic) reproductions count as direct evidence |
 | P3 Dataset-cue label probe | Accuracy with "this tweet is from the OLID dataset; give its gold label" minus neutral prompt | Evidence of label memorisation if the gain exists on OLID and not on fresh posts |
-| P4 Min-K% Prob (if maKI supports input log probabilities) | Score distribution and AUC, OLID vs fresh | Suggestive only (Duan et al. 2024 time-shift confound); train vs test comparison is unconfounded |
-| P5 Data Contamination Quiz (if a 4th maKI model exists) | Rate of picking the original among 3 paraphrases, vs 25% chance | Evidence if OLID above chance and fresh at chance |
+| P4 Min-K% Prob (if maKI supports input log probabilities) | Score distribution and AUC, OLID vs fresh | Suggestive only (Duan et al. 2024 time-shift confound); train vs test comparison is unconfounded. Per-item API failures are recorded; a model failing on more than 10% of items is excluded, because the scored items would no longer be a random subset (rule added 20 Nov after Gemma returned NaN errors on some posts, before any P4 result existed) |
+| P5 Data Contamination Quiz (paraphrases by ministral-3-14b) | Rate of picking the original among 3 paraphrases, vs 25% chance | Evidence only if OLID accuracy exceeds the FRESH accuracy (CI excludes 0). Above-chance accuracy alone is not evidence: real posts are messier than machine paraphrases, so a model can spot the original without memory. Reported with accuracy by correct position (letter bias) and among valid answers |
 | Train vs test | Same probes on 200 OLID train posts | Similar scores → test split exposed like the rest of OLID |
+
+Deviation log (20 Nov): Qwen began its quiz replies with reasoning and was cut off at the 4-token limit in 105 of 391 items, before giving a letter. Qwen is re-asked the identical quiz prompts with a 256-token limit, parsed by a fixed rule (explicit "answer is X", then a bold letter, then the last standalone letter). Both versions are reported; the 256-token version is primary for Qwen, and the fresh posts use the same setting.
 
 Verdict wording is fixed: "evidence of exposure" / "no evidence detected (not evidence of absence)".
 

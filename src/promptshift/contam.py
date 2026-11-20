@@ -19,6 +19,8 @@ Commands (in order)
   python src/promptshift/contam.py run --part stage1 --all
   python src/promptshift/contam.py quiz-prepare
   python src/promptshift/contam.py run --part quiz --all
+  python src/promptshift/contam.py quiz-long-prepare      # Qwen only, see quiz_long_prepare
+  python src/promptshift/contam.py run --part quiz_long --all
   python src/promptshift/contam.py minkprob --all
   python src/promptshift/contam.py analyze
 
@@ -318,6 +320,47 @@ def parse_letter(text):
     return match.group(1) if match else None
 
 
+QUIZ_LONG_MODELS = ["qwen3.6-36b"]
+MAX_TOKENS_QUIZ_LONG = 256
+
+
+def parse_letter_long(text):
+    """For replies that reason before answering: explicit 'answer is X' first,
+    then a bold/parenthesised letter, then the last standalone letter."""
+    if not isinstance(text, str):
+        return None
+    t = text.strip()
+    for pattern in (r"answer\s*(?:is|:)?\s*[:\-]?\s*\**\s*(?:option\s*)?\(?([ABCD])\b",
+                    r"\*\*\s*\(?([ABCD])\)?\s*\*\*",
+                    r"\boption\s*\(?([ABCD])\)?\s*is\s+the\s+original"):
+        found = re.findall(pattern, t, flags=re.IGNORECASE)
+        if found:
+            return found[-1].upper()
+    found = re.findall(r"(?<![A-Za-z])([ABCD])(?![A-Za-z])", t)
+    return found[-1] if found else None
+
+
+def quiz_long_prepare(out_dir=CONTAM_DIR):
+    """Deviation (20 Nov): Qwen began reasoning and was cut off at 4 tokens in 105/391
+    quiz answers. Re-ask Qwen the identical quiz prompts with room to answer."""
+    out_dir = Path(out_dir)
+    base = read_jsonl(out_dir / "quiz_requests.jsonl")
+    requests = []
+    for r in base:
+        if r["model"] in QUIZ_LONG_MODELS:
+            requests.append({**r, "request_id": r["request_id"].replace("p5:", "p5long:"),
+                             "condition": "quiz_long", "max_tokens": MAX_TOKENS_QUIZ_LONG})
+    requests = shuffled(requests, [CONTAM_SEED, 9])
+    write_jsonl(out_dir / "quiz_long_requests.jsonl", requests)
+    meta = {"created_utc": utc_now(), "models": QUIZ_LONG_MODELS, "max_tokens": MAX_TOKENS_QUIZ_LONG,
+            "n_requests": len(requests),
+            "requests_file_sha256": sha256_file(out_dir / "quiz_long_requests.jsonl"),
+            "reason": "Qwen replies truncated at 4 tokens before giving a letter"}
+    write_json(out_dir / "quiz_long_meta.json", meta)
+    write_json(C.PROTOCOL_DIR / "contam_quiz_long_fingerprint.json", meta)
+    return meta
+
+
 def quiz_prepare(out_dir=CONTAM_DIR):
     out_dir = Path(out_dir)
     items = [i for g in GROUPS for i in read_jsonl(out_dir / f"items_{g}.jsonl")]
@@ -396,28 +439,25 @@ def mink_call(client, model, text, method):
     return logprobs_from_prompt_logprobs(d["choices"][0]), d.get("model")
 
 
+MINK_MAX_FAIL_SHARE = 0.10   # a model failing on more items than this is excluded from P4
+
+
 def run_minkprob(client, out_dir=CONTAM_DIR, limit=None, delay=C.DELAY_SECONDS):
+    """Score every item for every model. A per-item API failure (e.g. Gemma's NaN error)
+    is recorded and skipped; it never stops the run. Exclusion is decided in analysis."""
     out_dir = Path(out_dir)
     output = out_dir / "mink_results.jsonl"
     items = [i for g in GROUPS for i in read_jsonl(out_dir / f"items_{g}.jsonl")]
-    done = {(r["model"], r["uid"]) for r in read_jsonl(output)}
-    method_for = {}
-    for r in read_jsonl(output):
-        if r.get("method"):
-            method_for.setdefault(r["model"], r["method"])
-    excluded = {r["model"] for r in read_jsonl(output) if r.get("excluded")}
+    done = {(r["model"], r["uid"]) for r in read_jsonl(output) if r.get("uid")}
     count = 0
     for model in MINK_MODELS:
-        if model in excluded:
-            continue
         for item in items:
             if (model, item["uid"]) in done:
                 continue
             if limit is not None and count >= limit:
                 return count
-            methods = [method_for[model]] if model in method_for else ["echo", "prompt_logprobs"]
             record, errors = None, []
-            for method in methods:
+            for method in ("echo", "prompt_logprobs"):
                 for attempt in range(1, C.MAX_TRANSPORT_RETRIES + 2):
                     try:
                         lps, served = mink_call(client, model, item["text"], method)
@@ -443,13 +483,8 @@ def run_minkprob(client, out_dir=CONTAM_DIR, limit=None, delay=C.DELAY_SECONDS):
                 if record:
                     break
             if record is None:
-                if model not in method_for:
-                    append_jsonl(output, {"model": model, "excluded": True, "errors": errors,
-                                          "timestamp_utc": utc_now()})
-                    print(f"{model}: input log probabilities not available -> excluded from P4")
-                    break
-                raise SystemExit(f"{model} failed on {item['uid']} after working before: {errors}")
-            method_for.setdefault(model, record["method"])
+                record = {"model": model, "uid": item["uid"], "group": item["group"],
+                          "failed": True, "errors": errors[-2:], "timestamp_utc": utc_now()}
             append_jsonl(output, record)
             count += 1
             if count % 100 == 0:
@@ -560,26 +595,46 @@ def p3_scores(out_dir):
 
 
 def p4_scores(out_dir):
-    out = {}
-    for r in read_jsonl(Path(out_dir) / "mink_results.jsonl"):
-        if r.get("excluded") or r.get("min_k_prob") is None:
+    records = [r for r in read_jsonl(Path(out_dir) / "mink_results.jsonl") if r.get("uid")]
+    out, attempted, failed = {}, Counter(), Counter()
+    for r in records:
+        attempted[r["model"]] += 1
+        if r.get("failed") or r.get("min_k_prob") is None:
+            failed[r["model"]] += 1
             continue
         out.setdefault((r["group"], r["model"]), []).append(r["min_k_prob"])
-    excluded = sorted({r["model"] for r in read_jsonl(Path(out_dir) / "mink_results.jsonl") if r.get("excluded")})
-    return out, excluded
+    excluded = sorted(m for m in attempted if failed[m] / attempted[m] > MINK_MAX_FAIL_SHARE)
+    out = {k: v for k, v in out.items() if k[1] not in excluded}
+    return out, excluded, {m: (failed[m], attempted[m]) for m in attempted}
 
 
 def p5_scores(out_dir):
     keys = {k["uid"]: k for k in read_jsonl(Path(out_dir) / "quiz_key.jsonl")}
-    out, letters = {}, {}
-    for r in read_jsonl(Path(out_dir) / "quiz_predictions.jsonl"):
-        key = keys.get(r["row_id"])
-        if not key or not key.get("quiz_valid"):
-            continue
-        letter = parse_letter(r.get("raw_response"))
-        out.setdefault((key["group"], r["model"]), []).append(int(letter == key["answer"]))
-        letters.setdefault((key["group"], r["model"]), Counter())[letter or "invalid"] += 1
-    return out, letters
+    out, letters, by_position = {}, {}, {}
+    sources = [("quiz_predictions.jsonl", parse_letter, "")]
+    if (Path(out_dir) / "quiz_long_predictions.jsonl").exists():
+        sources.append(("quiz_long_predictions.jsonl", parse_letter_long, LONG_SUFFIX))
+    for filename, parser, suffix in sources:
+        for r in read_jsonl(Path(out_dir) / filename):
+            key = keys.get(r["row_id"])
+            if not key or not key.get("quiz_valid"):
+                continue
+            letter = parser(r.get("raw_response"))
+            correct = int(letter == key["answer"])
+            cell = (key["group"], r["model"] + suffix)
+            out.setdefault(cell, []).append(correct)
+            letters.setdefault(cell, Counter())[letter or "invalid"] += 1
+            by_position.setdefault(cell, {}).setdefault(key["answer"], []).append(correct)
+    return out, letters, by_position
+
+
+LONG_SUFFIX = "+long"
+
+
+def short_name(model):
+    if model.endswith(LONG_SUFFIX):
+        return C.MODEL_SHORT[model[:-len(LONG_SUFFIX)]] + " (256-token answers)"
+    return C.MODEL_SHORT[model]
 
 
 def analyse(out_dir=CONTAM_DIR):
@@ -621,12 +676,15 @@ def analyse(out_dir=CONTAM_DIR):
     lines += _contrasts("P3", {k: v["diffs"] for k, v in p3.items()}, rows, rng, lambda v: v)
 
     # P4
-    p4, excluded = p4_scores(out_dir)
+    p4, excluded, fails = p4_scores(out_dir)
     lines += ["", f"## P4 Min-K% Prob (k = {int(MINK_K * 100)}%; higher = more familiar)", ""]
+    lines.append("API failures per model: " + ", ".join(
+        f"{C.MODEL_SHORT[m]} {f}/{a}" for m, (f, a) in fails.items()) + ".")
     if excluded:
-        lines.append(f"Excluded (API could not return input log probabilities): "
+        lines.append(f"Excluded (more than {int(MINK_MAX_FAIL_SHARE * 100)}% of items failed, so the "
+                     f"scored items are not a random subset): "
                      f"{', '.join(C.MODEL_SHORT[m] for m in excluded)}.")
-        lines.append("")
+    lines.append("")
     lines += ["| Model | Comparison | AUC [95% CI] | Note |", "|---|---|---|---|"]
     for model in C.MODELS:
         for pos, neg, note in (("olid_test", "olid_train", "same era; no time confound"),
@@ -643,7 +701,7 @@ def analyse(out_dir=CONTAM_DIR):
                      "estimate": float(np.mean(v)), "ci_low": None, "ci_high": None})
 
     # P5
-    p5, letters = p5_scores(out_dir)
+    p5, letters, by_position = p5_scores(out_dir)
     lines += ["", "## P5 Data Contamination Quiz (pick the original among 4; chance = 0.25)", "",
               "| Group | Model | n | Accuracy [95% CI] | Binomial p (> 0.25) | Picks A/B/C/D/invalid |",
               "|---|---|---:|---|---:|---|"]
@@ -653,8 +711,18 @@ def analyse(out_dir=CONTAM_DIR):
         c = letters[(group, model)]
         rows.append({"probe": "P5", "group": group, "model": model, "n": len(v), "estimate": m,
                      "ci_low": lo, "ci_high": hi, "p_greater_than_chance": float(p)})
-        lines.append(f"| {group} | {C.MODEL_SHORT[model]} | {len(v)} | {m:.3f} [{lo:.3f}, {hi:.3f}] | "
+        lines.append(f"| {group} | {short_name(model)} | {len(v)} | {m:.3f} [{lo:.3f}, {hi:.3f}] | "
                      f"{p:.4f} | {c['A']}/{c['B']}/{c['C']}/{c['D']}/{c['invalid']} |")
+    lines += ["", "P5 diagnostics: accuracy when the original is at position A/B/C/D "
+              "(a model that favours one letter scores high only there), and accuracy among valid answers.", "",
+              "| Group | Model | Acc if A | Acc if B | Acc if C | Acc if D | Acc among valid |",
+              "|---|---|---:|---:|---:|---:|---:|"]
+    for cell in sorted(by_position):
+        pos = by_position[cell]
+        valid = sum(v for k, v in letters[cell].items() if k != "invalid")
+        acc_valid = sum(p5[cell]) / valid if valid else float("nan")
+        cols = " | ".join(f"{np.mean(pos[L]):.2f} (n={len(pos[L])})" if L in pos else "n/a" for L in LETTERS)
+        lines.append(f"| {cell[0]} | {short_name(cell[1])} | {cols} | {acc_valid:.3f} |")
     lines += _contrasts("P5", p5, rows, rng, lambda v: v)
 
     qmeta = out_dir / "quiz_meta.json"
@@ -675,14 +743,15 @@ def _contrasts(probe, scores, rows, rng, f):
     lines = ["", f"{probe} group contrasts (independent bootstrap, difference in means):", "",
              "| Model | Contrast | Difference [95% CI] |", "|---|---|---|"]
     added = False
-    for model in C.MODELS:
+    models = list(C.MODELS) + sorted({m for _, m in scores if m.endswith(LONG_SUFFIX)})
+    for model in models:
         for a, b in (("olid_test", "olid_train"), ("olid_test", "fresh"), ("olid_train", "fresh")):
             if (a, model) in scores and (b, model) in scores:
                 d, lo, hi = boot_diff_ci(f(scores[(a, model)]), f(scores[(b, model)]), rng)
                 rows.append({"probe": f"{probe}_contrast", "group": f"{a} - {b}", "model": model,
                              "n": len(scores[(a, model)]) + len(scores[(b, model)]),
                              "estimate": d, "ci_low": lo, "ci_high": hi})
-                lines.append(f"| {C.MODEL_SHORT[model]} | {a} − {b} | {d:+.3f} [{lo:+.3f}, {hi:+.3f}] |")
+                lines.append(f"| {short_name(model)} | {a} − {b} | {d:+.3f} [{lo:+.3f}, {hi:+.3f}] |")
                 added = True
     return lines if added else []
 
@@ -707,13 +776,14 @@ def main():
     p = sub.add_parser("prepare")
     p.add_argument("--groups", nargs="+", choices=GROUPS, required=True)
     r = sub.add_parser("run")
-    r.add_argument("--part", choices=["stage1", "quiz"], required=True)
+    r.add_argument("--part", choices=["stage1", "quiz", "quiz_long"], required=True)
     r.add_argument("--groups", nargs="+", choices=GROUPS, default=["olid_train", "olid_test"],
                    help="which stage1 manifest (as given to prepare)")
     g = r.add_mutually_exclusive_group(required=True)
     g.add_argument("--all", action="store_true")
     g.add_argument("--limit", type=int)
     sub.add_parser("quiz-prepare")
+    sub.add_parser("quiz-long-prepare")
     m = sub.add_parser("minkprob")
     gm = m.add_mutually_exclusive_group(required=True)
     gm.add_argument("--all", action="store_true")
@@ -734,9 +804,10 @@ def main():
             manifest = CONTAM_DIR / meta["requests_file"]
             out, att = CONTAM_DIR / f"stage1_predictions_{tag}.jsonl", CONTAM_DIR / f"stage1_attempts_{tag}.jsonl"
         else:
-            meta = read_json(CONTAM_DIR / "quiz_meta.json")
-            manifest = CONTAM_DIR / "quiz_requests.jsonl"
-            out, att = CONTAM_DIR / "quiz_predictions.jsonl", CONTAM_DIR / "quiz_attempts.jsonl"
+            name = args.part
+            meta = read_json(CONTAM_DIR / f"{name}_meta.json")
+            manifest = CONTAM_DIR / f"{name}_requests.jsonl"
+            out, att = CONTAM_DIR / f"{name}_predictions.jsonl", CONTAM_DIR / f"{name}_attempts.jsonl"
         summary = run(manifest, out, att, make_client(), limit=None if args.all else args.limit,
                       request_logprobs=False, expected_manifest_sha256=meta["requests_file_sha256"])
         print("RUN_SESSION_DONE", summary)
@@ -745,6 +816,9 @@ def main():
     elif args.step == "quiz-prepare":
         meta = quiz_prepare()
         print("QUIZ_PREPARE_OK", {k: meta[k] for k in ("n_items", "n_valid", "valid_by_group", "n_requests")})
+    elif args.step == "quiz-long-prepare":
+        meta = quiz_long_prepare()
+        print("QUIZ_LONG_PREPARE_OK", {k: meta[k] for k in ("models", "n_requests")})
     elif args.step == "minkprob":
         from api import make_client
         n = run_minkprob(make_client(), limit=None if args.all else args.limit)
