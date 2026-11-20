@@ -1,0 +1,44 @@
+{
+  "created_utc": "2026-11-20T09:24:47.127086+00:00",
+  "git": {
+    "commit": "9b8048558675fef4b50037f276d09ed440c2f80f",
+    "dirty": true
+  },
+  "groups": [
+    "olid_train",
+    "olid_test"
+  ],
+  "sources": {
+    "olid_train": {
+      "file_sha256": "4c2cb443cb5b956aa8578a6e18b2f9e50ce43217774e3cf171d53e16a1db81a3",
+      "n_rows": 11916,
+      "label_counts": {
+        "0": 7975,
+        "1": 3941
+      },
+      "n_items": 200,
+      "uids_sha256": "4e57c3114541abac8df86446e3102ba6a3f8dedd5afcc980610cd55c47b6e05b"
+    },
+    "olid_test": {
+      "reused_from": "data/main/probe_items.jsonl",
+      "n": 200,
+      "n_items": 200,
+      "uids_sha256": "31baf9b62af4e4c3fe66f0b5ea17b90ae129f0e36e630948e1da7c5c6fcb7ded"
+    }
+  },
+  "n_requests": 4000,
+  "requests_file": "stage1_requests_olid_train_olid_test.jsonl",
+  "requests_file_sha256": "791f55a6b92dc2ed0d70c65b470e323811288e49a859e3f60efe33f0e9164007",
+  "templates_sha256": {
+    "neutral": "82b48220abd0e7648c97ce13f814fb01c6a66a75dfff16bb1a01491c9d0a4d33",
+    "cue": "34e71b7d4de65c14c713d83012b4df8d152ab6efbc8ce2ec6c2d2056523cbe85",
+    "paraphrase": "6fae0e8d7294eac65bd51d877cc3c2246d8ab42c267df74eefc5d0261b54aacc",
+    "quiz": "6c00f00dfab047f7f743d9abbafb15d0a997dfa345d8bde6399802c4adbfc2e6"
+  },
+  "settings": {
+    "seed": 20261128,
+    "n_per_group": 200,
+    "mink_k": 0.2,
+    "paraphrase_model": "ministral-3-14b"
+  }
+}

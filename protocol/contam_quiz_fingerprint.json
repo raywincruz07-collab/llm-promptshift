@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-11-20T10:17:59.127061+00:00",
+  "n_items": 180,
+  "n_valid": 180,
+  "valid_by_group": {
+    "olid_train": [
+      60,
+      60
+    ],
+    "olid_test": [
+      60,
+      60
+    ],
+    "fresh": [
+      60,
+      60
+    ]
+  },
+  "n_requests": 540,
+  "requests_file_sha256": "d8431a064d3264c8bca664fcdee1dc80821781d6f27c4733b926a8eb33bf490c",
+  "key_file_sha256": "2bc204240cf3ed593d40dfe5fecbe2d1670386a181086ceef61aef398baa2ecc"
+}
