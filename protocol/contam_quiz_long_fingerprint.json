@@ -1,0 +1,10 @@
+{
+  "created_utc": "2026-11-20T10:35:02.151458+00:00",
+  "models": [
+    "qwen3.6-36b"
+  ],
+  "max_tokens": 256,
+  "n_requests": 391,
+  "requests_file_sha256": "2136ff31490a9eab3926582987224eaaaf26ee04ac98f18ba43788b27bc2b0a5",
+  "reason": "Qwen replies truncated at 4 tokens before giving a letter"
+}

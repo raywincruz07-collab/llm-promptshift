@@ -1,0 +1,73 @@
+{
+  "created_utc": "2026-11-25T16:30:30.502951+00:00",
+  "git": {
+    "commit": "444d5dcdb3978c4bedb7cdc4629c3b3801aa9780",
+    "dirty": true
+  },
+  "source": "Bluesky app.bsky.feed.searchPosts",
+  "window": [
+    "2026-05-01",
+    "2026-11-15"
+  ],
+  "keywords": [
+    "you are",
+    "she is",
+    "he is",
+    "gun control",
+    "conservatives",
+    "antifa",
+    "MAGA",
+    "liberals"
+  ],
+  "seed": 20261129,
+  "raw_returned": 15561,
+  "raw_kept_after_filters": 11405,
+  "after_dedupe": 10926,
+  "dropped_reasons": {
+    "keyword_not_in_text": 1180,
+    "too_short": 714,
+    "quote_post": 2006,
+    "outside_window": 31,
+    "already_in_pool": 225
+  },
+  "pool_by_keyword": {
+    "gun control": 1242,
+    "antifa": 1263,
+    "liberals": 1337,
+    "conservatives": 1326,
+    "she is": 1406,
+    "MAGA": 1267,
+    "he is": 1506,
+    "you are": 1579
+  },
+  "sample_by_keyword": {
+    "you are": 59,
+    "she is": 59,
+    "he is": 59,
+    "gun control": 59,
+    "conservatives": 59,
+    "antifa": 59,
+    "MAGA": 58,
+    "liberals": 58
+  },
+  "sample_by_month": {
+    "2026-05-01": 72,
+    "2026-06-01": 72,
+    "2026-07-01": 70,
+    "2026-08-01": 64,
+    "2026-09-01": 64,
+    "2026-10-01": 64,
+    "2026-11-01": 64
+  },
+  "max_posts_per_author": 2,
+  "files_sha256": {
+    "calibration": "da7ab2d67e97c0f8fc51e28231daa9956fec7150a33d394634c0ea7fccfdd045",
+    "pilot": "ca210ac00489f10d196d57866914148dd583ee367bfb190454868725df744573",
+    "main": "555ac780467c80451fb4e82352b744e5766a2d575341b351700b0e430ee746c6"
+  },
+  "n": {
+    "calibration": 30,
+    "pilot": 40,
+    "main": 400
+  }
+}
