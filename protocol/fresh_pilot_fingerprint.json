@@ -1,0 +1,55 @@
+{
+  "created_utc": "2026-11-25T16:37:40.364192+00:00",
+  "git": {
+    "commit": "e7610de747ef04c4c44d9e0cdef8bf0e4a45ca37",
+    "dirty": false
+  },
+  "stage": "fresh_pilot",
+  "dataset": {
+    "source": "bluesky (collect_fresh.py)",
+    "file": "sample_pilot.jsonl",
+    "file_sha256": "ca210ac00489f10d196d57866914148dd583ee367bfb190454868725df744573"
+  },
+  "n_posts": 40,
+  "label_counts": {
+    "unlabelled_at_prepare": 40
+  },
+  "sample_row_ids_sha256": "c6f38e8d0f3bac72a7764ddfe43f31fcf50e5cacdd253cf80e84f1a9b9b56457",
+  "models": [
+    "gemma4-26b",
+    "qwen3.6-36b",
+    "llama-3.3-70b"
+  ],
+  "conditions": [
+    "W0",
+    "W1",
+    "W2",
+    "D0",
+    "D1",
+    "D2",
+    "R0",
+    "RD0"
+  ],
+  "n_requests": 960,
+  "shuffle_seed": 20261123,
+  "shuffle_attempts_needed": 4,
+  "requests_file_sha256": "9440ec241865bea5457b9cc7b38994729b3718a7baabc2a6e59a2df76120bf90",
+  "prompt_registry_sha256": "a7444f2eca2da58e5c6d3458568ed556a727b50f54561ecf436dc303783eb896",
+  "template_sha256": {
+    "W0": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0",
+    "W1": "b5c24e0ba048255fd343b0db920204f7230ee6f7c6f3d9a92fac8fbca42fef2f",
+    "W2": "850011b9fc6b9c853ae82da3f2a049825e1b40430ed99e4157eaf712132b9154",
+    "D0": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00",
+    "D1": "2e58515ebca6c7fad8db7cb5fc9197aa3ccc664d728e007608f85667ab274e16",
+    "D2": "70496673f06d931afa9d61109587a7953af271a7e26ac622f3130a3628863cc4",
+    "R0": "f740a119687145cd84d3811c779d484601a872fa29482d9011a6a616c44a50f0",
+    "RD0": "0187e5f6a0ba398ad344ae752b3a692cb3cffae9216c602f84286d99cae7de00"
+  },
+  "inference": {
+    "temperature": 0,
+    "max_tokens": 16,
+    "request_logprobs": true,
+    "concurrency": 1
+  },
+  "primary_h2": "macro_f1"
+}
