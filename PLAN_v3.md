@@ -1,6 +1,6 @@
-# PromptShift v3: full study plan (draft for freeze)
+# PromptShift v3: full study plan (FROZEN)
 
-Status: DRAFT, 20 Nov 2026. Becomes binding when committed as the "freeze v3" commit, before any model call on the fresh data.
+Status: FROZEN, 25 Nov 2026. Binding from the "Freeze plan v3" commit onward. That commit precedes every model call on the fresh posts and the finalisation of their gold labels. Any later change is listed in the deviation log (section 10) with date and reason.
 
 This plan responds to the 19 Nov 2026 meeting feedback:
 (1) hypotheses must be sharper; (2) a slide must state how the work differs from prior work, because the RQ is otherwise a replication;
@@ -45,12 +45,13 @@ To verify before citing: the exact claims of Errica et al. and Reiss in the pape
 ### 4.1 OLID (existing)
 TweetEval offensive test split, 860 posts, pinned revision; 20,640 predictions already collected (commit 1d75816). Not rerun.
 
-### 4.2 Fresh posts (new)
+### 4.2 Fresh posts (new) — collected 25 Nov 2026
 - **Platform:** Bluesky, public posts, `app.bsky.feed.searchPosts` with an app password.
+- **What was collected** (protocol/fresh_collection_fingerprint.json): 15,561 posts returned, 11,405 kept after filters (dropped: 2,006 quote posts, 1,180 keyword only outside the text, 714 too short, 31 outside the window, 225 already in pool), 10,926 after de-duplication; 470 sampled (58–59 per keyword, 64–72 per month, at most 2 per author).
 - **Time window:** created 1 May 2026 – 15 Nov 2026. All three models were released before May 2026 (Llama 3.3: Dec 2024, cutoff Dec 2023; Gemma 4: 2 Apr 2026, cutoff Jan 2025; Qwen 3.6: Apr 2026, cutoff undisclosed), so these posts cannot be in pretraining data. Check with maKI that the served weights are the April releases.
 - **Sampling:** OLID's retained keywords that exist on Bluesky: "you are", "she is", "he is", "gun control", "conservatives", "antifa", "MAGA", "liberals". Dropped with reason: "to:BreitBartNews" and "-filter:safe" are Twitter-specific operators.
 - **Stratification:** equal number per keyword and spread across months, to avoid one news event dominating.
-- **Filters:** language English; original posts only (no reposts); at least 3 words; exact and near-duplicate removal.
+- **Filters:** language English; original posts only (no reposts, no quote posts); at least 3 content words; keyword present in the text; exact and near-duplicate removal (Jaccard ≥ 0.8).
 - **Preprocessing as OLID:** mentions → `@USER`, links → `URL`.
 - **Size:** 400 main + 40 pilot + 30 annotator-calibration = 470 posts, disjoint.
 - **Ethics:** post text never committed; author IDs stored only as salted hashes; raw download deleted after the study; report counts and pattern, never quotes that identify authors.
@@ -58,8 +59,9 @@ TweetEval offensive test split, 860 posts, pinned revision; 20,640 predictions a
 ### 4.3 Human gold labels for fresh posts
 - **Guide:** one page, OLID Level A definitions verbatim, 6 worked examples (invented, not from the sample).
 - **Calibration:** both annotators label the 30 calibration posts, discuss disagreements to clarify the guide (not the main data).
-- **Main labelling:** two annotators label all 400 + 40 independently, blind to each other and to model outputs.
-- **Disagreements:** a third team member decides, blind to who said what (mirrors OLID: two annotations, third on disagreement).
+- **Main labelling:** two annotators (A, B) label the 400 main posts plus 100 OLID anchors (500 items, separate random orders) independently, blind to each other and to model outputs. The 40 pilot posts are not labelled: the pilot only checks answer format.
+- **Disagreements:** a third team member (C) labels each disagreement without seeing A's or B's labels; the final label is the majority of the three (mirrors OLID).
+- **Blinding to model outputs:** the annotators also run the pipeline. Nobody opens fresh predictions or runs any fresh analysis until `annotate_fresh.py finalize` has produced `gold_main.jsonl`; the runner prints progress only.
 - **Anchor check:** the same two annotators also label 100 OLID test posts, mixed in. This measures agreement of our annotators with OLID gold, so the two gold standards are comparable.
 - **Reported:** Krippendorff's alpha (fresh), agreement with OLID gold on the 100 anchors.
 - Labelling cannot be automated: using an LLM to create the gold labels would make the evaluation circular.
@@ -69,15 +71,21 @@ W0–W2, D0–D2, R0, RD0; temperature 0; max 16 tokens; shuffled order; same pr
 
 ## 6. Hypotheses (per model; Holm across the primary family)
 
-| ID | Statement | Estimand | Test | SESOI |
+What was already seen: the OLID side of every estimand below was observed before this plan (OLID results, commit fa704fd). The fresh side is unseen. The hypotheses are confirmatory because their fresh-side values, and therefore the contrasts, are unknown at freeze time.
+
+| ID | Statement | Estimand (per model) | Test | SESOI |
 |---|---|---|---|---|
-| H1 | Excess wording sensitivity is higher on fresh posts than on OLID | EWS = mean pairwise disagreement W0–W2 minus disagreement W0–R0; Δ = EWS_fresh − EWS_OLID > 0 | Independent-sample percentile bootstrap, one-sided | 0.01 |
-| H2 | Labelling quality is lower on fresh posts | macro-F1 averaged over the six non-repeat conditions, fresh − OLID < 0 | Independent bootstrap (class-stratified), one-sided | 0.03 |
-| H3 | The definition reduces prevalence error, on each dataset | \|prev_D − prev_human\| − \|prev_W − prev_human\| < 0 (averaged over wordings) | Paired bootstrap, one-sided | 0.02 |
+| H1 | Excess wording sensitivity is higher on fresh posts than on OLID | Per post: mean pairwise disagreement among W0, W1, W2 minus 1[W0 ≠ R0]; EWS = mean over posts; Δ = EWS_fresh − EWS_OLID > 0 | Independent percentile bootstrap (posts resampled within each dataset), B = 10,000, one-sided p = (1 + #{Δ* ≤ 0}) / (B + 1) | 0.01 |
+| H2 | Labelling quality is lower on fresh posts | macro-F1 (vs each dataset's gold labels) averaged over W0–W2 and D0–D2; Δ = F1_fresh − F1_OLID < 0 | Independent bootstrap, class-stratified within each dataset, one-sided p = (1 + #{Δ* ≥ 0}) / (B + 1) | 0.03 |
+| H3 | On fresh posts, the definition reduces prevalence error | PE_X = mean over the three wordings of \|predicted offensive share − gold offensive share\| under condition set X; Δ = PE_D − PE_W < 0 | Paired bootstrap over posts, class-stratified, one-sided | 0.02 |
 
-Primary family: 3 + 3 + 6 = 12 tests, Holm, alpha 0.05. Each result is reported as an estimate with a 95% CI and a size verdict, whether or not it is significant.
+Primary family: H1 × 3 + H2 × 3 + H3 × 3 = 9 tests, Holm, alpha 0.05. H3 on OLID is reported alongside but is NOT confirmatory (already observed: all three models moved toward the gold share). Each result is reported as estimate, 95% CI, Holm p and size verdict (as in v2: "materially positive/negative" if the one-sided bound clears the SESOI; "practically equivalent" if the CI lies within ±SESOI; otherwise "inconclusive").
 
-Expected power: with 400 fresh posts, the CI half-width for H1 is roughly ±0.015 [estimate, to confirm by simulation before freezing]. H1 may therefore be inconclusive; that is an acceptable outcome if reported as such.
+Invalid answers: posts with an invalid answer in any condition entering an estimand are excluded from that estimand (as in v2); sensitivity: invalid counted as disagreement (H1) or error (H2, H3).
+
+Gold-standard comparability (fixed in advance): if either annotator's Cohen's kappa against OLID gold on the 100 anchors is below 0.60, H2 is reported but marked "not interpretable as a contamination effect" (the two gold standards would differ too much). H1 does not depend on gold labels.
+
+Expected precision (approximation from OLID: about 4% of posts flip, per-post EWS sd ≈ 0.13): CI half-width for H1 Δ ≈ ±0.016; for H2 Δ ≈ ±0.06. H1 has roughly 35–40% power for a true Δ of 0.01 and detects Δ ≳ 0.026 reliably; H2 is underpowered for 0.03. Inconclusive results are acceptable and will be reported as such.
 
 ### Exploratory (labelled exploratory everywhere)
 - E1: does the definition help more on fresh posts than on OLID (difference-in-differences of macro-F1)?
@@ -100,9 +108,12 @@ Deviation log (20 Nov): Qwen began its quiz replies with reasoning and was cut o
 
 Verdict wording is fixed: "evidence of exposure" / "no evidence detected (not evidence of absence)".
 
+Fresh group of the battery: all gold-labelled main posts that meet the probe's length rule (≥ 12 content tokens). P1 and P3 need gold labels and run after `finalize`; P4 and P5 can run earlier but are not analysed before `finalize`.
+
 ## 8. Analysis outputs
 Tables: compliance, primary tests, per-condition metrics for both datasets, contamination battery, annotation agreement. Figures: OLID vs fresh EWS; macro-F1 by dataset; prevalence error with and without definition; probe scores by group.
-Sensitivity: invalid-as-error; duplicates removed; OLID subsample matched on keyword and length; fresh posts with annotator disagreement removed.
+Sensitivity: invalid-as-error; duplicates removed; OLID subsample matched on length (keyword is not recorded for OLID posts); fresh posts with annotator disagreement removed.
+Analysis code: `analyze_v3.py`, written after this freeze and tested on mock data before `finalize`; it implements section 6 exactly. Any difference between code and plan is logged in section 10.
 
 ## 9. Order of work and completion criteria
 
@@ -116,3 +127,14 @@ Sensitivity: invalid-as-error; duplicates removed; OLID subsample matched on key
 | F Runs | Pilot 100% compliant; main 9,600 calls; probes on fresh posts |
 | G Analysis | All tables and figures generated; every number in slides traced to an output file |
 | H Deliverables | Slides with novelty slide; two timed rehearsals; report; admin |
+
+## 10. Deviation log
+
+| Date | Change | Reason | Before or after seeing fresh results |
+|---|---|---|---|
+| 20 Nov | Min-K%: per-item failures recorded; model excluded if > 10% fail | Gemma returned NaN errors on some posts | Before any P4 result |
+| 20 Nov | Qwen quiz re-asked with 256-token limit | 105/391 replies cut off at 4 tokens | Before fresh data existed |
+| 25 Nov | Pilot posts not labelled; anchors 100; third annotator labels blind, majority vote | Reduce annotation load; mirror OLID | Before fresh model calls |
+| 25 Nov | Primary family 9 tests (H3 on OLID descriptive only) | H3 on OLID already observed | Before fresh model calls |
+| 25 Nov | Mastodon collector kept in repo but not used | Bluesky worked | Before fresh model calls |
+| 25 Nov | protocol/contam_quiz_fingerprint.json restored from data/contam/quiz_meta.json | The test suite had overwritten it with mock values (bug fixed; a guard test now blocks this) | Before fresh model calls |

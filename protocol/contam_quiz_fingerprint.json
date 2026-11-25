@@ -1,22 +1,22 @@
 {
-  "created_utc": "2026-11-25T16:13:22.783960+00:00",
-  "n_items": 180,
-  "n_valid": 180,
+  "created_utc": "2026-11-20T10:03:52.494251+00:00",
+  "n_items": 400,
+  "n_valid": 391,
   "valid_by_group": {
     "olid_train": [
-      60,
-      60
+      195,
+      200
     ],
     "olid_test": [
-      60,
-      60
+      196,
+      200
     ],
     "fresh": [
-      60,
-      60
+      0,
+      0
     ]
   },
-  "n_requests": 540,
-  "requests_file_sha256": "d8431a064d3264c8bca664fcdee1dc80821781d6f27c4733b926a8eb33bf490c",
-  "key_file_sha256": "2bc204240cf3ed593d40dfe5fecbe2d1670386a181086ceef61aef398baa2ecc"
+  "n_requests": 1173,
+  "requests_file_sha256": "cd48f29ce576b014646fec3701184cdfdff19903bf18d7c70a4d4d343891cbc8",
+  "key_file_sha256": "8bea0283b0b45c888ed5c98091d0a83baba5375d02a6a0dd56f85cd51aa50314"
 }

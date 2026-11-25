@@ -380,7 +380,9 @@ def main():
     parser.add_argument("--stage", choices=sorted(C.STAGES), required=True)
     args = parser.parse_args()
     data_dir = C.stage_dir(args.stage)
-    if args.stage == "pilot":
+    if args.stage == "fresh":
+        raise SystemExit("The fresh stage is analysed with analyze_v3.py (needs gold labels).")
+    if args.stage in ("pilot", "fresh_pilot"):
         rows, bad = pilot_report(data_dir)
         print("PILOT_REPORT_OK", f"non-compliant: {len(bad)}", "->", data_dir / "results" / "pilot_summary.md")
         return

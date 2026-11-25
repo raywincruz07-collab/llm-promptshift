@@ -30,6 +30,11 @@ SPLIT_LABEL_COUNTS = {
 STAGES = {
     "pilot": {"split": "validation", "n_posts": 40},
     "main": {"split": "test", "n_posts": None},
+    # PLAN_v3: Bluesky posts written after the models' release (collect_fresh.py).
+    #   fresh_pilot -> 40 posts, compliance check only (not labelled, no hypothesis).
+    #   fresh       -> 400 posts, gold labels from annotate_fresh.py; all v3 results.
+    "fresh_pilot": {"source": "fresh", "file": "sample_pilot.jsonl"},
+    "fresh": {"source": "fresh", "file": "sample_main.jsonl"},
 }
 
 # Primary H2 metric: "macro_f1" (all three models, two-sided).

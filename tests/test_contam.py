@@ -160,7 +160,7 @@ def test_end_to_end_battery_recovers_planted_effects(tmp_path, monkeypatch):
                   client, delay=0, backoff_base=0, request_logprobs=False, quiet=True)
     assert summary["remaining"] == 0
 
-    meta = K.quiz_prepare(tmp_path)
+    meta = K.quiz_prepare(tmp_path, tmp_path)
     assert meta["n_valid"] == len(items)
     run(tmp_path / "quiz_requests.jsonl", tmp_path / "quiz_predictions.jsonl", tmp_path / "b.jsonl",
         client, delay=0, backoff_base=0, request_logprobs=False, quiet=True)

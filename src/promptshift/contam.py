@@ -340,7 +340,7 @@ def parse_letter_long(text):
     return found[-1] if found else None
 
 
-def quiz_long_prepare(out_dir=CONTAM_DIR):
+def quiz_long_prepare(out_dir=CONTAM_DIR, protocol_dir=C.PROTOCOL_DIR):
     """Deviation (20 Nov): Qwen began reasoning and was cut off at 4 tokens in 105/391
     quiz answers. Re-ask Qwen the identical quiz prompts with room to answer."""
     out_dir = Path(out_dir)
@@ -357,11 +357,11 @@ def quiz_long_prepare(out_dir=CONTAM_DIR):
             "requests_file_sha256": sha256_file(out_dir / "quiz_long_requests.jsonl"),
             "reason": "Qwen replies truncated at 4 tokens before giving a letter"}
     write_json(out_dir / "quiz_long_meta.json", meta)
-    write_json(C.PROTOCOL_DIR / "contam_quiz_long_fingerprint.json", meta)
+    write_json(Path(protocol_dir) / "contam_quiz_long_fingerprint.json", meta)
     return meta
 
 
-def quiz_prepare(out_dir=CONTAM_DIR):
+def quiz_prepare(out_dir=CONTAM_DIR, protocol_dir=C.PROTOCOL_DIR):
     out_dir = Path(out_dir)
     items = [i for g in GROUPS for i in read_jsonl(out_dir / f"items_{g}.jsonl")]
     para = [r for r in stage1_all(out_dir) if r["task"] == "paraphrase"]
@@ -387,7 +387,7 @@ def quiz_prepare(out_dir=CONTAM_DIR):
             "requests_file_sha256": sha256_file(out_dir / "quiz_requests.jsonl"),
             "key_file_sha256": sha256_file(out_dir / "quiz_key.jsonl")}
     write_json(out_dir / "quiz_meta.json", meta)
-    write_json(C.PROTOCOL_DIR / "contam_quiz_fingerprint.json", meta)
+    write_json(Path(protocol_dir) / "contam_quiz_fingerprint.json", meta)
     return meta
 
 

@@ -56,8 +56,17 @@ def load_split(split: str) -> list:
     return records
 
 
+def load_fresh(stage: str) -> list:
+    """Fresh posts (no gold labels needed to build requests; labels are joined at analysis)."""
+    path = C.DATA_DIR / "fresh" / C.STAGES[stage]["file"]
+    records = read_jsonl(path)
+    if not records:
+        raise SystemExit(f"{path} not found: run collect_fresh.py sample first.")
+    return [{"row_id": r["row_id"], "text": r["text"]} for r in records]
+
+
 def stage_sample(stage: str, records: list) -> list:
-    n = C.STAGES[stage]["n_posts"]
+    n = C.STAGES[stage].get("n_posts")
     if n is None:
         return records
     rng = np.random.default_rng(C.PILOT_SEED)
@@ -122,15 +131,21 @@ def prepare(records, stage, data_dir, protocol_dir, seed=C.SHUFFLE_SEED, force=F
     ordered, attempts = shuffle_requests(build_requests(records, stage), seed)
     write_jsonl(data_dir / "requests.jsonl", ordered)
 
-    counts = Counter(r["label"] for r in records)
+    counts = Counter(r.get("label") for r in records)
+    source = C.STAGES.get(stage, {}).get("source")
     fingerprint = {
         "created_utc": utc_now(),
         "git": git_state(C.ROOT),
         "stage": stage,
-        "dataset": {"repo": C.DATASET_REPO, "revision": C.DATASET_REVISION,
-                    "split": C.STAGES.get(stage, {}).get("split")},
+        "dataset": ({"source": "bluesky (collect_fresh.py)",
+                     "file": C.STAGES[stage]["file"],
+                     "file_sha256": sha256_file(C.DATA_DIR / "fresh" / C.STAGES[stage]["file"])}
+                    if source == "fresh" else
+                    {"repo": C.DATASET_REPO, "revision": C.DATASET_REVISION,
+                     "split": C.STAGES.get(stage, {}).get("split")}),
         "n_posts": len(records),
-        "label_counts": {"NOT_OFFENSIVE": counts.get(0, 0), "OFFENSIVE": counts.get(1, 0)},
+        "label_counts": ({"unlabelled_at_prepare": len(records)} if source == "fresh" else
+                         {"NOT_OFFENSIVE": counts.get(0, 0), "OFFENSIVE": counts.get(1, 0)}),
         "sample_row_ids_sha256": sha256_text(",".join(str(r["row_id"]) for r in records)),
         "models": C.MODELS,
         "conditions": C.CONDITIONS,
@@ -155,7 +170,10 @@ def main():
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    records = stage_sample(args.stage, load_split(C.STAGES[args.stage]["split"]))
+    if C.STAGES[args.stage].get("source") == "fresh":
+        records = load_fresh(args.stage)
+    else:
+        records = stage_sample(args.stage, load_split(C.STAGES[args.stage]["split"]))
     fingerprint = prepare(records, args.stage, C.stage_dir(args.stage), C.PROTOCOL_DIR, force=args.force)
     print("PREPARE_OK")
     for key in ("stage", "n_posts", "label_counts", "n_requests", "requests_file_sha256",
