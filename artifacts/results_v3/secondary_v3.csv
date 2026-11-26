@@ -1,0 +1,46 @@
+dataset,model,measure,estimate,ci_low,ci_high,n,note
+OLID,gemma4-26b,wording disagreement (mean pairwise W0-W2),0.027131782945736434,0.018604651162790697,0.036434108527131776,860,
+OLID,gemma4-26b,repeat disagreement W0 vs R0,0.0011627906976744186,0.0,0.0034883720930232558,860,
+OLID,gemma4-26b,repeat disagreement D0 vs RD0,0.005813953488372093,0.0011627906976744186,0.011627906976744186,860,
+OLID,gemma4-26b,any-flip rate across W0-W2,0.040697674418604654,0.027906976744186046,0.05465116279069768,860,
+OLID,gemma4-26b,"H3 on OLID (descriptive, not confirmatory): PE_D - PE_W",-0.08488372093023258,-0.10155038759689922,-0.06937015503875982,860,observed before freeze
+OLID,gemma4-26b,E2 confidence (W0 first-token prob): flipped - stable,-0.11926842827327855,-0.17229642007558812,-0.07108307314644889,860,exploratory
+fresh,gemma4-26b,wording disagreement (mean pairwise W0-W2),0.026666666666666665,0.015,0.04,400,
+fresh,gemma4-26b,repeat disagreement W0 vs R0,0.0025,0.0,0.0075,400,
+fresh,gemma4-26b,repeat disagreement D0 vs RD0,0.0075,0.0,0.0175,400,
+fresh,gemma4-26b,any-flip rate across W0-W2,0.04,0.0225,0.06,400,
+fresh,gemma4-26b,E2 confidence (W0 first-token prob): flipped - stable,-0.06357442263705115,-0.11467358383222011,-0.021506474728869508,400,exploratory
+fresh - OLID,gemma4-26b,"E1 definition effect on macro-F1, fresh minus OLID",0.032862118297498855,-0.01944998117009918,0.08758866317314466,1260,exploratory
+fresh,gemma4-26b,E4 any-flip rate: annotators disagreed - agreed,0.05009784735812133,-0.03287671232876712,0.15342465753424658,400,exploratory; 35 posts with annotator disagreement
+OLID,qwen3.6-36b,wording disagreement (mean pairwise W0-W2),0.030232558139534883,0.020930232558139535,0.03953488372093023,860,
+OLID,qwen3.6-36b,repeat disagreement W0 vs R0,0.0,0.0,0.0,860,
+OLID,qwen3.6-36b,repeat disagreement D0 vs RD0,0.0,0.0,0.0,860,
+OLID,qwen3.6-36b,any-flip rate across W0-W2,0.04534883720930233,0.031395348837209305,0.05930232558139535,860,
+OLID,qwen3.6-36b,"H3 on OLID (descriptive, not confirmatory): PE_D - PE_W",-0.03914728682170543,-0.05193798449612401,-0.02713178294573644,860,observed before freeze
+OLID,qwen3.6-36b,E2 confidence (W0 first-token prob): flipped - stable,-0.28616476248210254,-0.31312993628004937,-0.25874406658089233,860,exploratory
+fresh,qwen3.6-36b,wording disagreement (mean pairwise W0-W2),0.035,0.021666666666666664,0.05,400,
+fresh,qwen3.6-36b,repeat disagreement W0 vs R0,0.0,0.0,0.0,400,
+fresh,qwen3.6-36b,repeat disagreement D0 vs RD0,0.0,0.0,0.0,400,
+fresh,qwen3.6-36b,any-flip rate across W0-W2,0.0525,0.0325,0.075,400,
+fresh,qwen3.6-36b,E2 confidence (W0 first-token prob): flipped - stable,-0.27280733098353793,-0.32368184840264375,-0.21784317411996026,400,exploratory
+fresh - OLID,qwen3.6-36b,"E1 definition effect on macro-F1, fresh minus OLID",0.013551156533188946,-0.023844764776235785,0.05169380913056059,1260,exploratory
+fresh,qwen3.6-36b,E4 any-flip rate: annotators disagreed - agreed,0.005088062622309195,-0.06301369863013699,0.09628180039138942,400,exploratory; 35 posts with annotator disagreement
+OLID,llama-3.3-70b,wording disagreement (mean pairwise W0-W2),0.024806201550387597,0.01627906976744186,0.03333333333333333,860,
+OLID,llama-3.3-70b,repeat disagreement W0 vs R0,0.0,0.0,0.0,860,
+OLID,llama-3.3-70b,repeat disagreement D0 vs RD0,0.0,0.0,0.0,860,
+OLID,llama-3.3-70b,any-flip rate across W0-W2,0.037209302325581395,0.02558139534883721,0.05,860,
+OLID,llama-3.3-70b,"H3 on OLID (descriptive, not confirmatory): PE_D - PE_W",-0.04031007751937986,-0.053100775193798466,-0.02558139534883721,860,observed before freeze
+OLID,llama-3.3-70b,E2 confidence (W0 first-token prob): flipped - stable,-0.13960625184507536,-0.19467218322322896,-0.08884902186273032,860,exploratory
+fresh,llama-3.3-70b,wording disagreement (mean pairwise W0-W2),0.035,0.021666666666666664,0.05,400,
+fresh,llama-3.3-70b,repeat disagreement W0 vs R0,0.0,0.0,0.0,400,
+fresh,llama-3.3-70b,repeat disagreement D0 vs RD0,0.0,0.0,0.0,399,
+fresh,llama-3.3-70b,any-flip rate across W0-W2,0.0525,0.0325,0.075,400,
+fresh,llama-3.3-70b,E2 confidence (W0 first-token prob): flipped - stable,-0.1047078645981262,-0.17274886350290863,-0.045867761074624216,400,exploratory
+fresh - OLID,llama-3.3-70b,"E1 definition effect on macro-F1, fresh minus OLID",0.03208462736749895,0.002996156474713647,0.060964928671168865,1259,exploratory
+fresh,llama-3.3-70b,E4 any-flip rate: annotators disagreed - agreed,0.06771037181996085,-0.028962818003913895,0.18199608610567514,400,exploratory; 35 posts with annotator disagreement
+OLID,Gemma vs Qwen,E3 between-model disagreement on W0,0.05930232558139535,0.04302325581395349,0.0755813953488372,860,exploratory
+OLID,Gemma vs Llama,E3 between-model disagreement on W0,0.2069767441860465,0.18023255813953487,0.23488372093023255,860,exploratory
+OLID,Qwen vs Llama,E3 between-model disagreement on W0,0.2058139534883721,0.17906976744186046,0.23255813953488372,860,exploratory
+fresh,Gemma vs Qwen,E3 between-model disagreement on W0,0.07,0.0475,0.0975,400,exploratory
+fresh,Gemma vs Llama,E3 between-model disagreement on W0,0.245,0.2025,0.2875,400,exploratory
+fresh,Qwen vs Llama,E3 between-model disagreement on W0,0.23,0.19,0.2725,400,exploratory

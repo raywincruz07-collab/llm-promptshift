@@ -1,0 +1,46 @@
+analysis,test,estimate,ci_low,ci_high,p_holm,size_verdict,n_fresh,n_olid
+invalid answers counted as disagreement/error,H1_Gemma,-0.001802325581395349,-0.01813953488372093,0.014903100775193794,1.0,size inconclusive,400,860
+invalid answers counted as disagreement/error,H2_Gemma,0.07772179968376358,0.028508421598487738,0.12574924966063655,1.0,smaller than SESOI (lower bound above -SESOI),400,860
+invalid answers counted as disagreement/error,H3_Gemma,-0.09000000000000002,-0.11416666666666668,-0.06666666666666665,0.0008999100089991002,materially negative (upper bound below -SESOI),400,
+invalid answers counted as disagreement/error,H1_Qwen,0.00476744186046512,-0.012325581395348839,0.022443798449612376,1.0,size inconclusive,400,860
+invalid answers counted as disagreement/error,H2_Qwen,0.06146861100585721,0.005154913407809866,0.11506518899137236,1.0,smaller than SESOI (lower bound above -SESOI),400,860
+invalid answers counted as disagreement/error,H3_Qwen,-0.03166666666666666,-0.049166666666666664,-0.015833333333333324,0.0008999100089991002,size inconclusive,400,
+invalid answers counted as disagreement/error,H1_Llama,0.010193798449612407,-0.006007751937984491,0.02763565891472868,0.686931306869313,size inconclusive,400,860
+invalid answers counted as disagreement/error,H2_Llama,0.06446543326040532,0.02155109810807074,0.10874272985916052,1.0,smaller than SESOI (lower bound above -SESOI),400,860
+invalid answers counted as disagreement/error,H3_Llama,-0.05750000000000001,-0.07999999999999999,-0.03666666666666669,0.0008999100089991002,materially negative (upper bound below -SESOI),400,
+OLID exact duplicates removed,H1_Gemma,-0.0008333333333333352,-0.017063492063492062,0.015634920634920637,1.0,size inconclusive,400,840
+OLID exact duplicates removed,H2_Gemma,0.07866417230325884,0.028828541097029578,0.12649621999140284,1.0,smaller than SESOI (lower bound above -SESOI),400,840
+OLID exact duplicates removed,H3_Gemma,-0.09000000000000002,-0.11416666666666668,-0.06666666666666665,0.0008999100089991002,materially negative (upper bound below -SESOI),400,
+OLID exact duplicates removed,H1_Qwen,0.005634920634920642,-0.011666666666666669,0.022857142857142854,1.0,size inconclusive,400,840
+OLID exact duplicates removed,H2_Qwen,0.06326032469327103,0.007822016254094009,0.11727833537202963,1.0,smaller than SESOI (lower bound above -SESOI),400,840
+OLID exact duplicates removed,H3_Qwen,-0.03166666666666666,-0.049166666666666664,-0.015833333333333324,0.0008999100089991002,size inconclusive,400,
+OLID exact duplicates removed,H1_Llama,0.009603174603174607,-0.006825396825396825,0.02698412698412699,0.8105189481051895,size inconclusive,400,840
+OLID exact duplicates removed,H2_Llama,0.06823136458575596,0.024702400870997475,0.11105183044640547,1.0,smaller than SESOI (lower bound above -SESOI),399,840
+OLID exact duplicates removed,H3_Llama,-0.05847953216374269,-0.08020050125313283,-0.03842940685045948,0.0008999100089991002,materially negative (upper bound below -SESOI),399,
+fresh posts with annotator disagreement removed,H1_Gemma,-0.004964426038016355,-0.02085138579165339,0.011612111075714134,1.0,smaller than SESOI (upper bound below SESOI),365,860
+fresh posts with annotator disagreement removed,H2_Gemma,0.09466692643538721,0.043918015570531425,0.1420651417200152,1.0,smaller than SESOI (lower bound above -SESOI),365,860
+fresh posts with annotator disagreement removed,H3_Gemma,-0.08493150684931508,-0.10867579908675798,-0.06210045662100457,0.0008999100089991002,materially negative (upper bound below -SESOI),365,
+fresh posts with annotator disagreement removed,H1_Qwen,0.004470638207497081,-0.012742911755336088,0.022630614845492183,1.0,size inconclusive,365,860
+fresh posts with annotator disagreement removed,H2_Qwen,0.08254356195347079,0.027154736266734418,0.13770811557137352,1.0,smaller than SESOI (lower bound above -SESOI),365,860
+fresh posts with annotator disagreement removed,H3_Qwen,-0.0365296803652968,-0.054794520547945216,-0.019178082191780826,0.0008999100089991002,materially negative (upper bound below -SESOI),365,
+fresh posts with annotator disagreement removed,H1_Llama,0.006244026760114683,-0.009918232982903258,0.023733673144313478,1.0,size inconclusive,365,860
+fresh posts with annotator disagreement removed,H2_Llama,0.09229004583515721,0.05108139111513413,0.13464327550242025,1.0,smaller than SESOI (lower bound above -SESOI),364,860
+fresh posts with annotator disagreement removed,H3_Llama,-0.05036630036630038,-0.07234432234432234,-0.030219780219780223,0.0008999100089991002,materially negative (upper bound below -SESOI),364,
+OLID subsample matched on post length,H1_Gemma,0.0074302649930265,-0.012350069735006974,0.026596931659693162,1.0,size inconclusive,400,239
+OLID subsample matched on post length,H2_Gemma,0.06849885367514097,5.5335393607933015e-06,0.13990574390266436,1.0,smaller than SESOI (lower bound above -SESOI),400,239
+OLID subsample matched on post length,H3_Gemma,-0.09000000000000002,-0.11416666666666668,-0.06666666666666665,0.0008999100089991002,materially negative (upper bound below -SESOI),400,
+OLID subsample matched on post length,H1_Qwen,0.0015271966527196715,-0.023507670850767083,0.024352336122733603,1.0,size inconclusive,400,239
+OLID subsample matched on post length,H2_Qwen,0.047020626268523213,-0.026149296827914285,0.12147464586204086,1.0,smaller than SESOI (lower bound above -SESOI),400,239
+OLID subsample matched on post length,H3_Qwen,-0.03166666666666666,-0.049166666666666664,-0.015833333333333324,0.0008999100089991002,size inconclusive,400,
+OLID subsample matched on post length,H1_Llama,0.004316596931659703,-0.018543410041841,0.026596931659693162,1.0,size inconclusive,400,239
+OLID subsample matched on post length,H2_Llama,0.060917384909495054,0.0014810639437386084,0.1214985576928378,1.0,smaller than SESOI (lower bound above -SESOI),399,239
+OLID subsample matched on post length,H3_Llama,-0.05847953216374269,-0.08020050125313283,-0.03842940685045948,0.0008999100089991002,materially negative (upper bound below -SESOI),399,
+fresh gold = annotator A only (no adjudication),H1_Gemma,-0.001802325581395349,-0.01813953488372093,0.014903100775193794,1.0,size inconclusive,400,860
+fresh gold = annotator A only (no adjudication),H2_Gemma,0.03221690616724038,-0.0190079340047986,0.08142145414432811,1.0,smaller than SESOI (lower bound above -SESOI),400,860
+fresh gold = annotator A only (no adjudication),H3_Gemma,-0.09000000000000001,-0.11499999999999999,-0.06583333333333334,0.0008999100089991002,materially negative (upper bound below -SESOI),400,
+fresh gold = annotator A only (no adjudication),H1_Qwen,0.00476744186046512,-0.012325581395348839,0.022443798449612376,1.0,size inconclusive,400,860
+fresh gold = annotator A only (no adjudication),H2_Qwen,0.0035704676642566158,-0.05217463627327792,0.0578085115810655,1.0,size inconclusive,400,860
+fresh gold = annotator A only (no adjudication),H3_Qwen,-0.03166666666666665,-0.04999999999999999,-0.014999999999999986,0.0008999100089991002,size inconclusive,400,
+fresh gold = annotator A only (no adjudication),H1_Llama,0.010193798449612407,-0.006007751937984491,0.02763565891472868,0.8014198580141986,size inconclusive,400,860
+fresh gold = annotator A only (no adjudication),H2_Llama,0.060565275693824416,0.01632087760359966,0.10489716864737346,1.0,smaller than SESOI (lower bound above -SESOI),399,860
+fresh gold = annotator A only (no adjudication),H3_Llama,-0.031746031746031744,-0.06683375104427736,0.023391812865497075,0.9053094690530947,size inconclusive,399,
