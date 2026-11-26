@@ -1,0 +1,44 @@
+{
+  "created_utc": "2026-11-26T18:23:48.732940+00:00",
+  "git": {
+    "commit": "bb7cacceb1e4e064acbe95e98522b95a7b4dd07d",
+    "dirty": false
+  },
+  "n": 400,
+  "label_counts": {
+    "0": 302,
+    "1": 98
+  },
+  "offensive_share": 0.245,
+  "n_disagreements_adjudicated": 35,
+  "scores": {
+    "created_utc": "2026-11-26T18:02:38.073412+00:00",
+    "fresh": {
+      "n": 400,
+      "raw_agreement": 0.9125,
+      "krippendorff_alpha": 0.7763354688037367,
+      "offensive_share_A": 0.3075,
+      "offensive_share_B": 0.225,
+      "unsure_A": 55,
+      "unsure_B": 56,
+      "n_disagreements": 35
+    },
+    "olid_anchor": {
+      "n": 100,
+      "raw_agreement": 0.93,
+      "krippendorff_alpha": 0.7936601984891127,
+      "offensive_share_A": 0.24,
+      "offensive_share_B": 0.19,
+      "unsure_A": 4,
+      "unsure_B": 12,
+      "accuracy_vs_olid_A": 0.78,
+      "kappa_vs_olid_A": 0.42946058091286304,
+      "accuracy_vs_olid_B": 0.77,
+      "kappa_vs_olid_B": 0.36743674367436735
+    }
+  },
+  "gold_file_sha256": "36e48b6cb77fa75d081c70929e36cc6af6bf533bd2a0e1da4329c4a4efe319ca",
+  "key_file_sha256": "51bf1aa7fb1515754b0e17f493e9e347d74ef6c7c86ff99cfd03d7b95a797024",
+  "procedure": "two independent annotations; third annotator (blind) on disagreement; majority label",
+  "texts_sha256": "7719025b46af38387fc7cf5644c262db8d7ee8cfb92784af3af6f4fcf0ba34f9"
+}
