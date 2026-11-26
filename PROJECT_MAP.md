@@ -99,13 +99,16 @@ Agreement with OLID's own labels on 100 OLID posts mixed in: kappa **0.43 and 0.
 - One task, one platform per dataset; Bluesky users differ from 2019 Twitter users.
 - Three minimal wordings, so the wording effect is likely a lower bound.
 - Our labels and OLID's differ (kappa about 0.4), so accuracy cannot be compared across datasets (H2).
-- With annotator A's labels alone, H3 stays significant for Gemma but not for Llama (sensitivity table in summary_v3.md).
+- With annotator A's labels alone, H3 stays significant for Gemma and Qwen but not for Llama (sensitivity table in summary_v3.md).
+- No contamination probe detects OLID, so "OLID was seen in training" remains an assumption.
 - Precision (95% CI half-widths): H1 about ±0.017, H3 about ±0.02; small differences in wording sensitivity (below about 0.02) cannot be ruled out.
 
 ## 6. Where everything is
 
 | What | Link |
 |---|---|
+| 8-page visual overview (before/after, data, timeline, real example) | [docs/PromptShift_v3_Simple.pdf](docs/PromptShift_v3_Simple.pdf) |
+| References (checked) | [docs/references.md](docs/references.md) |
 | Frozen plan, hypotheses, deviation log | [PLAN_v3.md](PLAN_v3.md) |
 | Results v3 (tables, figures) | [artifacts/results_v3](artifacts/results_v3) |
 | Contamination battery | [artifacts/contam/contam_summary.md](artifacts/contam/contam_summary.md) |
