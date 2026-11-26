@@ -65,7 +65,7 @@ Agreement with OLID's own labels on 100 OLID posts mixed in: kappa **0.43 and 0.
 |---|---|---|---|---|
 | **H1** wording sensitivity: fresh − OLID | −0.002 | +0.005 | +0.010 | **Not supported**: about the same on unseen posts |
 | **H2** macro-F1: fresh − OLID | +0.078 | +0.061 | +0.065 | **Not interpretable** (pre-set rule: kappa with OLID labels below 0.60) |
-| **H3** definition reduces prevalence error on fresh posts | −0.090 * | −0.032 * | −0.059 * | **Supported for all three models** |
+| **H3** definition reduces prevalence error on fresh posts | −0.090 * | −0.032 * | −0.058 * | **Significant for all three** (size inconclusive for Qwen) |
 
 \* significant after Holm correction. Full tables: [summary_v3.md](artifacts/results_v3/summary_v3.md)
 

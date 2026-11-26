@@ -1,0 +1,20 @@
+% Local stand-in for acl.sty, used ONLY when the official ACL style is not present.
+% On Overleaf (ACL template) main.tex loads the official acl.sty instead.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{acl_preview}[2026/11/26 local preview of the ACL two-column layout]
+\RequirePackage[letterpaper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\setlength{\columnsep}{0.6cm}
+\RequirePackage[round]{natbib}
+\RequirePackage{xcolor}
+\setlength{\emergencystretch}{1.5em}
+\RequirePackage[colorlinks=true,citecolor=blue!50!black,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\makeatletter
+\renewcommand\maketitle{%
+  \twocolumn[%
+    \begin{center}
+      {\Large\bfseries \@title\par}\vskip 1em
+      {\normalsize \begin{tabular}[t]{c}\@author\end{tabular}\par}\vskip 1.5em
+    \end{center}]%
+  \thispagestyle{plain}}
+\renewenvironment{abstract}{\begin{center}\bfseries Abstract\end{center}\begin{quote}\small}{\end{quote}}
+\makeatother

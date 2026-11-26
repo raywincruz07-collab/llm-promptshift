@@ -23,7 +23,7 @@ IS 617 *Large Language Models for the Economic and Social Sciences*, University 
 |---|---|---|---|
 | H1 | Excess wording sensitivity is higher on fresh posts than on OLID | 0.01 | Gemma −0.002, Qwen +0.005, Llama +0.010; none significant |
 | H2 | Labelling quality is lower on fresh posts | 0.03 macro-F1 | Not interpretable (gold-label agreement rule not met) |
-| H3 | On fresh posts, the definition reduces prevalence error | 0.02 | Gemma −0.090, Qwen −0.032, Llama −0.059; all p = 0.0009 |
+| H3 | On fresh posts, the definition reduces prevalence error | 0.02 | Gemma −0.090, Qwen −0.032, Llama −0.058; all p = 0.0009 |
 
 Estimands, tests and size verdicts: [PLAN_v3.md §6](PLAN_v3.md). All numbers: [artifacts/results_v3/summary_v3.md](artifacts/results_v3/summary_v3.md).
 
@@ -90,6 +90,8 @@ OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If 
 | Contamination battery | [artifacts/contam/](artifacts/contam/) |
 | Prompts and data fingerprints | [protocol/](protocol/) |
 | References (checked) | [docs/references.md](docs/references.md), [docs/references.bib](docs/references.bib) |
+| Final presentation (with speaker notes) | [docs/PromptShift_v3_Final_Presentation.pptx](docs/PromptShift_v3_Final_Presentation.pptx) |
+| Report draft (ACL format, LaTeX + preview PDF) | [report/](report/) |
 | Midterm version | `main` branch |
 
 ## Privacy and ethics
