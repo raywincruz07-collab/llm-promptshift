@@ -86,7 +86,10 @@ def load_fresh(data_dir=None, gold_path=None):
     labels = _labels_from_predictions(sample, predictions, read_jsonl(data_dir / "requests.jsonl"))
     y = [gold[r["row_id"]]["label"] for r in sample]
     agree = np.array([bool(gold[r["row_id"]].get("annotators_agree", True)) for r in sample])
-    return Dataset("fresh", sample, y, labels, predictions, {"annotators_agree": agree})
+    extra = {"annotators_agree": agree}
+    if all("label_A" in gold[r["row_id"]] for r in sample):
+        extra["gold_A"] = np.array([int(gold[r["row_id"]]["label_A"]) for r in sample])
+    return Dataset("fresh", sample, y, labels, predictions, extra)
 
 
 # ------------------------------------------------------------------ estimands
@@ -343,9 +346,13 @@ def sensitivity(olid, fresh, n_boot):
         "fresh posts with annotator disagreement removed": {"fresh_subset": fresh.extra["annotators_agree"]},
         "OLID subsample matched on post length": {"olid_subset": length_matched_olid(olid, fresh)},
     }
+    runs = [(name, olid, fresh, opt) for name, opt in analyses.items()]
+    if "gold_A" in fresh.extra:
+        fresh_a = Dataset("fresh", fresh.sample, fresh.extra["gold_A"], fresh.labels, fresh.predictions, fresh.extra)
+        runs.append(("fresh gold = annotator A only (no adjudication)", olid, fresh_a, {}))
     rows = []
-    for name, opt in analyses.items():
-        for r in primary(olid, fresh, n_boot, **opt):
+    for name, o, f, opt in runs:
+        for r in primary(o, f, n_boot, **opt):
             rows.append({"analysis": name, **{k: r[k] for k in ("test", "estimate", "ci_low", "ci_high",
                                                                  "p_holm", "size_verdict")},
                          "n_fresh": r.get("n_fresh", r.get("n")), "n_olid": r.get("n_olid")})

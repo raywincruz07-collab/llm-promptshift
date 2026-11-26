@@ -239,6 +239,7 @@ def finalize(ann_dir=ANN_DIR, fresh_dir=FRESH_DIR, protocol_dir=C.PROTOCOL_DIR):
         final = la if la == lb else c[k["item_id"]][0]   # majority of three
         record = sample[k["row_id"]]
         gold.append({"row_id": record["row_id"], "text": record["text"], "label": final,
+                     "label_A": la, "label_B": lb, "label_C": None if la == lb else c[k["item_id"]][0],
                      "annotators_agree": la == lb, "unsure_any": a[k["item_id"]][1] or b[k["item_id"]][1],
                      "keyword": record.get("keyword"), "window": record.get("window")})
     gold.sort(key=lambda r: r["row_id"])

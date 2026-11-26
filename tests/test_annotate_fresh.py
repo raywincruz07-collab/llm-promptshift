@@ -79,4 +79,6 @@ def test_round_trip(setup):
     gold = read_jsonl(fresh / "gold_main.jsonl")
     assert meta["n"] == 400 and sum(not g["annotators_agree"] for g in gold) == 20
     assert all(g["label"] == int("damn" in g["text"]) for g in gold)  # majority restores truth
+    assert all(g["label_C"] is None for g in gold if g["annotators_agree"])
+    assert all(g["label_A"] == g["label"] for g in gold)                 # A matched truth in this setup
     assert (tmp / "annotation_fingerprint.json").exists()

@@ -74,6 +74,7 @@ def test_null_effects_not_found():
 def test_full_analysis_writes_outputs(tmp_path):
     olid = make("OLID", 300, 5, 0.03, 0.85, True)
     fresh = make("fresh", 150, 6, 0.06, 0.8, True)
+    fresh.extra["gold_A"] = fresh.y.copy()
     gold_meta = {"n_disagreements_adjudicated": 12,
                  "scores": {"fresh": {"krippendorff_alpha": 0.8, "raw_agreement": 0.92},
                             "olid_anchor": {"accuracy_vs_olid_A": 0.85, "accuracy_vs_olid_B": 0.8,
@@ -84,7 +85,7 @@ def test_full_analysis_writes_outputs(tmp_path):
     for name in ("primary_v3.csv", "metrics_by_condition_v3.csv", "secondary_v3.csv", "sensitivity_v3.csv",
                  "fig5_v3_primary_tests.png", "fig6_v3_ews_by_dataset.png", "fig7_v3_prevalence_by_dataset.png"):
         assert (tmp_path / name).exists(), name
-    assert md.count("| H1_") >= 1 and "length" in md
+    assert md.count("| H1_") >= 1 and "length" in md and "annotator A only" in md
 
 
 def test_refuses_without_gold(tmp_path):
