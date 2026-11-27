@@ -95,8 +95,6 @@ OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If 
 | Contamination battery | [artifacts/contam/](artifacts/contam/) |
 | Prompts and data fingerprints | [protocol/](protocol/) |
 | References (checked) | [docs/references.md](docs/references.md), [docs/references.bib](docs/references.bib) |
-| Final presentation (with speaker notes) | [docs/PromptShift_v3_Final_Presentation.pptx](docs/PromptShift_v3_Final_Presentation.pptx) |
-| Report draft (ACL format, LaTeX + preview PDF) | [report/](report/) |
 | Midterm version | `main` branch |
 
 ## Data availability
