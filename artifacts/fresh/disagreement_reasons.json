@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-11-27T13:27:06.065830+00:00",
+  "n": 35,
+  "reasons": {
+    "criticism vs insult (political or personal)": 14,
+    "veiled or implicit insult": 8,
+    "quoted or reported offensive words": 4,
+    "sarcasm or irony": 4,
+    "context missing (reply/link/image)": 3,
+    "profanity not aimed at anyone": 2
+  },
+  "label_patterns": {
+    "A OFF / B NOT / C NOT": 26,
+    "A OFF / B NOT / C OFF": 8,
+    "A NOT / B OFF / C OFF": 1
+  }
+}
