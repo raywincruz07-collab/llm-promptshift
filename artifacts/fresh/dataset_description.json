@@ -1,0 +1,152 @@
+{
+  "created_utc": "2026-11-27T08:29:40.124592+00:00",
+  "n": 400,
+  "gold_offensive": 98,
+  "gold_offensive_share": 0.245,
+  "annotator_A_offensive": 123,
+  "annotator_B_offensive": 90,
+  "both_offensive": 89,
+  "both_not": 276,
+  "A_off_B_not": 34,
+  "A_not_B_off": 1,
+  "disagreements": 35,
+  "disagreement_rate": 0.0875,
+  "C_labelled_offensive": 9,
+  "C_sided_with_A": 8,
+  "C_sided_with_B": 27,
+  "unsure_A": 55,
+  "unsure_B": 56,
+  "disagreements_flagged_unsure": 32,
+  "words_median_new": 28,
+  "words_mean_new": 29.315,
+  "by_keyword": {
+    "MAGA": {
+      "n": 47,
+      "gold_offensive": 19,
+      "gold_share": 0.40425531914893614,
+      "A_share": 0.425531914893617,
+      "B_share": 0.40425531914893614,
+      "disagreements": 3
+    },
+    "he is": {
+      "n": 50,
+      "gold_offensive": 17,
+      "gold_share": 0.34,
+      "A_share": 0.4,
+      "B_share": 0.3,
+      "disagreements": 5
+    },
+    "conservatives": {
+      "n": 49,
+      "gold_offensive": 14,
+      "gold_share": 0.2857142857142857,
+      "A_share": 0.42857142857142855,
+      "B_share": 0.2653061224489796,
+      "disagreements": 8
+    },
+    "antifa": {
+      "n": 54,
+      "gold_offensive": 14,
+      "gold_share": 0.25925925925925924,
+      "A_share": 0.3333333333333333,
+      "B_share": 0.25925925925925924,
+      "disagreements": 4
+    },
+    "she is": {
+      "n": 46,
+      "gold_offensive": 10,
+      "gold_share": 0.21739130434782608,
+      "A_share": 0.2391304347826087,
+      "B_share": 0.21739130434782608,
+      "disagreements": 1
+    },
+    "liberals": {
+      "n": 49,
+      "gold_offensive": 10,
+      "gold_share": 0.20408163265306123,
+      "A_share": 0.2653061224489796,
+      "B_share": 0.16326530612244897,
+      "disagreements": 5
+    },
+    "gun control": {
+      "n": 52,
+      "gold_offensive": 7,
+      "gold_share": 0.1346153846153846,
+      "A_share": 0.15384615384615385,
+      "B_share": 0.11538461538461539,
+      "disagreements": 2
+    },
+    "you are": {
+      "n": 53,
+      "gold_offensive": 7,
+      "gold_share": 0.1320754716981132,
+      "A_share": 0.22641509433962265,
+      "B_share": 0.09433962264150944,
+      "disagreements": 7
+    }
+  },
+  "by_month": {
+    "2026-05": {
+      "n": 62,
+      "gold_offensive": 11,
+      "gold_share": 0.1774193548387097,
+      "disagreements": 9
+    },
+    "2026-06": {
+      "n": 62,
+      "gold_offensive": 19,
+      "gold_share": 0.3064516129032258,
+      "disagreements": 3
+    },
+    "2026-07": {
+      "n": 59,
+      "gold_offensive": 15,
+      "gold_share": 0.2542372881355932,
+      "disagreements": 4
+    },
+    "2026-08": {
+      "n": 50,
+      "gold_offensive": 8,
+      "gold_share": 0.16,
+      "disagreements": 4
+    },
+    "2026-09": {
+      "n": 58,
+      "gold_offensive": 20,
+      "gold_share": 0.3448275862068966,
+      "disagreements": 6
+    },
+    "2026-10": {
+      "n": 54,
+      "gold_offensive": 13,
+      "gold_share": 0.24074074074074073,
+      "disagreements": 6
+    },
+    "2026-11": {
+      "n": 55,
+      "gold_offensive": 12,
+      "gold_share": 0.21818181818181817,
+      "disagreements": 3
+    }
+  },
+  "olid_test": {
+    "n": 860,
+    "offensive": 240,
+    "offensive_share": 0.27906976744186046,
+    "words_median": 21,
+    "words_mean": 23.75232558139535
+  },
+  "olid_anchors": {
+    "n": 100,
+    "raw_agreement": 0.93,
+    "krippendorff_alpha": 0.7936601984891127,
+    "offensive_share_A": 0.24,
+    "offensive_share_B": 0.19,
+    "unsure_A": 4,
+    "unsure_B": 12,
+    "accuracy_vs_olid_A": 0.78,
+    "kappa_vs_olid_A": 0.42946058091286304,
+    "accuracy_vs_olid_B": 0.77,
+    "kappa_vs_olid_B": 0.36743674367436735
+  }
+}

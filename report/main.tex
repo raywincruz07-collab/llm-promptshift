@@ -14,6 +14,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{textcomp}
+\usepackage{url}
 
 \title{Same Post, Different Prompt: Is LLM Prompt Sensitivity in\\Offensive-Language Annotation an Artefact of Memorised Data?}
 
@@ -49,9 +50,11 @@ Our contributions are: (1) a pre-specified comparison of wording sensitivity on 
 
 \paragraph{OLID.} We use the TweetEval offensive test split (OLID level A), pinned to revision \texttt{b3a375b}: 860 posts, of which 240 (27.9\%) are labelled offensive.
 
-\paragraph{New posts.} We collected public posts from Bluesky, a Twitter-like platform, through its official search API, using the OLID sampling keywords that exist on Bluesky (\emph{you are, she is, he is, gun control, conservatives, antifa, MAGA, liberals}), month by month from 1 May to 15 November 2026. Llama~3.3 was released on 6 December 2024 with training data up to December 2023 \citep{meta2024llama33}; Gemma~4 was released on 2 April 2026 with data up to January 2025 \citep{gemma2026gemma4}; Qwen~3.6 was released in April 2026 \citep{qwen2026qwen36}. Every new post was therefore written after all three releases, and the collector rejects any post created before 1 May 2026 (31 posts fell outside the collection window). Of 15,561 returned posts, 11,405 remained after keeping English, original posts (no quote posts) with the keyword in the text and at least three content words, and 10,926 after removing exact and near duplicates (Jaccard $\geq 0.8$). We drew a stratified sample of 470 posts (58--59 per keyword, 64--72 per month, at most two per author) and split it into 400 main, 40 pilot and 30 calibration posts. As in OLID, mentions were replaced by \texttt{@USER} and links by \texttt{URL}. Counts and SHA-256 hashes of every file are stored in the repository.
+\paragraph{New posts.} We collected public posts from Bluesky, a Twitter-like platform, through the AT Protocol search endpoint \url{app.bsky.feed.searchPosts} on the server \url{bsky.social}, authenticated with an app password. As OLID did on Twitter, we searched with its sampling keywords, keeping those that exist on Bluesky (\emph{you are, she is, he is, gun control, conservatives, antifa, MAGA, liberals}), with \texttt{sort=latest}, \texttt{lang=en}, 100 posts per page and at most three pages per keyword and calendar month from 1 May to 15 November 2026 (parameters in Appendix~\ref{app:data}). Llama~3.3 was released on 6 December 2024 with training data up to December 2023 \citep{meta2024llama33}; Gemma~4 was released on 2 April 2026 with data up to January 2025 \citep{gemma2026gemma4}; Qwen~3.6 was released in April 2026 \citep{qwen2026qwen36}. Every new post was therefore written after all three releases, and the collector rejects any post created before 1 May 2026 (31 posts fell outside the collection window). Of 15,561 returned posts, 11,405 remained after keeping English, original posts (no quote posts) with the keyword in the text and at least three content words, and 10,926 after removing exact and near duplicates (Jaccard $\geq 0.8$). On 25 November 2026 we drew a stratified sample of 470 posts (58--59 per keyword, 64--72 per month, at most two per author; seed 20261129) and split it at random into 400 main, 40 pilot and 30 calibration posts; the 400 main posts contain 46--54 per keyword and 50--62 per month. As in OLID, mentions were replaced by \texttt{@USER} and links by \texttt{URL}. Counts and SHA-256 hashes of every file are stored in the repository.
 
-\paragraph{Human labels.} An LLM cannot provide the gold labels without making the evaluation circular, so the team labelled the posts. The one-page guide reproduces OLID's level-A definitions verbatim with six invented examples. Two team members first labelled and discussed the 30 calibration posts, then labelled the 400 main posts and 100 OLID test posts mixed in as anchors, in separate random orders. A third team member labelled the 35 posts on which the two disagreed, and the final label is the majority. Agreement between the two annotators was good (Krippendorff's $\alpha = 0.78$, raw agreement 91.2\%; \citealp{krippendorff2018content}); 24.5\% of the 400 posts are offensive. Agreement with OLID's labels on the anchors was moderate (accuracy 0.78 and 0.77, Cohen's $\kappa = 0.43$ and $0.37$). The two annotators' offensive shares on the new posts differed (30.8\% vs.\ 22.5\%), so we also report all tests with annotator A's labels alone.
+\paragraph{Composition.} 98 of the 400 main posts (24.5\%) are offensive under our final labels, close to OLID's 27.9\%. The share varies by keyword, from 13.2\% (\emph{you are}) and 13.5\% (\emph{gun control}) to 40.4\% (\emph{MAGA}) (Table~\ref{tab:kw}, Appendix~\ref{app:data}). Posts are longer than OLID's (median 28 vs.\ 21 words). Because the sample is drawn with OLID's keywords rather than at random, it over-represents political and person-directed posts; our prevalence estimates therefore describe keyword-matched posts, not Bluesky as a whole.
+
+\paragraph{Human labels.} An LLM cannot provide the gold labels without making the evaluation circular, so the team labelled the posts. The labelling guide reproduces OLID's level-A definitions verbatim; its seven decision rules and six invented examples were drafted with an LLM (Claude) and reviewed by the team (Appendix~\ref{app:guide}). In hindsight, adopting OLID's own guidelines without additions would have been better practice. Two team members (A and B) first labelled and discussed 30 calibration posts, then each labelled the 400 main posts and 100 OLID test posts mixed in as anchors, in separate random orders. They agreed on 365 of the 400 new posts (91.25\%; Krippendorff's $\alpha = 0.78$; \citealp{krippendorff2018content}). Of the 35 disagreements (8.75\%), 34 were labelled offensive by A and not offensive by B, 32 had been marked ``unsure'' by at least one annotator, and most occurred under \emph{conservatives} (8) and \emph{you are} (7). After labelling, annotator A reported that he had relied mainly on his own understanding of offensive language rather than on the full set of rules and examples, which is consistent with his higher offensive share (30.8\% vs.\ 22.5\%). A third team member (C) labelled the 35 disagreements (26 not offensive, 9 offensive, agreeing with B in 27 cases), and the final label is the majority of the three. Agreement with OLID's labels on the anchors was moderate (accuracy 0.78 and 0.77, Cohen's $\kappa = 0.43$ and $0.37$). We also report all tests with annotator A's labels alone.
 
 \section{Method}
 
@@ -140,15 +143,19 @@ The contamination battery illustrates why negative controls matter. Without the 
 
 \section{Limitations}
 
-That OLID is in the models' training data is an assumption: no probe detects it, so a null H1 may mean either that memorisation does not drive wording sensitivity or that OLID is not memorised strongly enough to matter. The two datasets also differ in platform, year and topic, so the contrast is not purely one of exposure, although matching on length did not change H1. H1 has limited power (roughly 35--40\% for a true difference of 0.01), so small differences cannot be ruled out. Three one-sentence wordings are a lower bound on realistic prompt variation. Our gold labels come from our team rather than OLID's annotators, which is why H2 cannot be interpreted, and Llama's H3 result depends on how disagreements were resolved. Finally, we rely on the maKI service to serve the published model weights, and Qwen~3.6's training cut-off is not published; our argument for Qwen rests on its release date.
+That OLID is in the models' training data is an assumption: no probe detects it, so a null H1 may mean either that memorisation does not drive wording sensitivity or that OLID is not memorised strongly enough to matter. The two datasets also differ in platform, year and topic, so the contrast is not purely one of exposure, although matching on length did not change H1. H1 has limited power (roughly 35--40\% for a true difference of 0.01), so small differences cannot be ruled out. Three one-sentence wordings are a lower bound on realistic prompt variation. Our gold labels come from our team rather than OLID's annotators, which is why H2 cannot be interpreted. The guide's rules were drafted with an LLM, annotator A labelled mainly from his own understanding, and Llama's H3 result depends on how disagreements were resolved. Our keyword sample does not represent Bluesky as a whole. Finally, we rely on the maKI service to serve the published model weights, and Qwen~3.6's training cut-off is not published; our argument for Qwen rests on its release date.
+
+\section*{Data Availability}
+
+With this report we submit the 400 Bluesky post identifiers (AT URIs and web links) with keyword, month, both annotators' labels, the adjudicator's label and the final label, and, for the examiners only, the post texts. The code to collect, sample, label and analyse the data is public in our repository (tag \texttt{v3.0}); posts deleted by their authors can no longer be retrieved through their identifiers.
 
 \section*{Ethics Statement}
 
-We used public Bluesky posts obtained through the platform's official API. No post text is published in the repository, the paper or the slides; examples are invented or shown as model answers only. Author identifiers are stored only as salted hashes, and the raw download is deleted after the course. Annotators were members of the research team.
+We used public Bluesky posts obtained through the platform's official API. No post text is published in the repository, the paper or the slides; examples are invented or shown as model answers only. In the public repository authors appear only as salted hashes; post identifiers, which reveal the account, are shared only with the examiners. The raw download is deleted after the course. Annotators were members of the research team and could pause or stop at any time.
 
 \section*{Use of AI Tools}
 
-Code, documentation and drafts of this report and the slides were written with the assistance of Claude (Anthropic) and reviewed and edited by the team, which is responsible for all content. No LLM produced any human label.
+Code, documentation, the rules and examples of the labelling guide, and drafts of this report and the slides were written with the assistance of Claude (Anthropic) and reviewed and edited by the team, which is responsible for all content. No LLM produced any human label.
 
 \section*{Acknowledgements}
 
@@ -159,6 +166,7 @@ Model queries were run on the maKI service of the University of Mannheim.
 \IfFileExists{acl_natbib.bst}{\bibliographystyle{acl_natbib}}{\bibliographystyle{plainnat}}
 
 \appendix
+\sloppy
 
 \section{Prompts}
 \label{app:prompts}
@@ -172,6 +180,38 @@ All prompts share the ending \texttt{Post: "\{text\}"} followed by \texttt{Answe
 \end{itemize}
 
 D0--D2 and RD0 insert, after the first sentence: \emph{Use these definitions: OFFENSIVE: Posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct. NOT\_OFFENSIVE: Posts that do not contain offense or profanity.}
+
+\section{Data Collection and Composition}
+\label{app:data}
+
+Collection parameters: endpoint \url{https://bsky.social/xrpc/app.bsky.feed.searchPosts}; query = keyword (multi-word keywords in quotes); \texttt{sort=latest}, \texttt{lang=en}, \texttt{limit=100}; \texttt{since} and \texttt{until} = calendar months from 2026-05-01 to 2026-11-15; up to three pages per keyword and month; 0.5\,s between requests. Filters: created inside the month and not before 2026-05-01, English, no quote posts, keyword present in the text, at least three content words. Dropped: 2,006 quote posts, 1,180 keyword not in text, 714 too short, 31 outside the window, 225 already collected. Near duplicates: Jaccard $\geq 0.8$ on word sets. Sampling: equal share per keyword, spread over months, at most two posts per author.
+
+\begin{table}[h]
+  \centering\small
+  \begin{tabular}{lrrr}
+    \toprule
+    Keyword & Posts & Offensive & Share \\
+    \midrule
+    MAGA & 47 & 19 & 40.4\% \\
+    he is & 50 & 17 & 34.0\% \\
+    conservatives & 49 & 14 & 28.6\% \\
+    antifa & 54 & 14 & 25.9\% \\
+    she is & 46 & 10 & 21.7\% \\
+    liberals & 49 & 10 & 20.4\% \\
+    gun control & 52 & 7 & 13.5\% \\
+    you are & 53 & 7 & 13.2\% \\
+    \midrule
+    All & 400 & 98 & 24.5\% \\
+    \bottomrule
+  \end{tabular}
+  \caption{Final labels on the 400 new posts by search keyword.}
+  \label{tab:kw}
+\end{table}
+
+\section{Labelling Guide}
+\label{app:guide}
+
+\emph{Definitions (OLID, verbatim).} OFF: posts containing any form of non-acceptable language (profanity) or a targeted offense, which can be veiled or direct. NOT: posts that do not contain offense or profanity. \emph{Rules (drafted with an LLM, reviewed by the team).} (1) Judge only the text shown. (2) Any profanity or swear word is OFF, even if friendly or not aimed at anyone. (3) An insult, threat or demeaning remark aimed at a person or group is OFF, even if worded politely. (4) Strong disagreement or political criticism without insult or profanity is NOT. (5) Offensive words in the post, also when quoting someone, are OFF. (6) Hashtags are part of the text. (7) If unsure, pick the better label and mark ``unsure''. Six invented examples (three OFF, three NOT) illustrated the rules. Annotators worked alone, without AI tools.
 
 \section{Sensitivity Analyses}
 \label{app:sens}

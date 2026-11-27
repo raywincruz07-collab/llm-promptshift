@@ -48,10 +48,12 @@ Bluesky search, OLID's 8 keywords, May–Nov 2026   15,561 posts
   − near-duplicates (Jaccard ≥ 0.8)                  10,926
   balanced sample (58–59 per keyword, 64–72 per month,
   ≤ 2 per author)                                       470 = 400 main + 40 pilot + 30 calibration
-  human labels on the 400 main posts                    24.5% offensive
+  human labels on the 400 main posts (46–54 per keyword) 98 offensive = 24.5% (OLID test: 27.9%)
 ```
 
-**Labels.** Two team members labelled the 400 posts plus 100 OLID anchor posts with OLID's definition; a third team member labelled the 35 disagreements; the final label is the majority. Krippendorff's alpha 0.78 (raw agreement 91.2%). The two annotators' offensive shares differ (30.8% vs 22.5%); a sensitivity analysis using annotator A's labels alone is reported (H3 stays significant for Gemma and Qwen, not for Llama).
+**Composition.** 24.5% of the new posts are offensive, from 13.2% (*you are*) to 40.4% (*MAGA*) by keyword; median 28 words (OLID 21). Keyword sampling, as in OLID, over-represents political and person-directed posts, so results describe keyword-matched posts, not Bluesky as a whole. Tables: [artifacts/fresh/dataset_description.md](artifacts/fresh/dataset_description.md); full description: [docs/DATA_CARD.md](docs/DATA_CARD.md).
+
+**Labels.** The guide uses OLID's definitions verbatim; its 7 rules and 6 invented examples were drafted with an LLM (Claude) and reviewed by the team. Two team members (A, B) labelled all 400 posts plus 100 OLID anchor posts; they agreed on 365 (91.25%, Krippendorff's alpha 0.78). Of the 35 disagreements, 34 are A = offensive / B = not offensive and 32 were marked "unsure"; a third team member (C) labelled them (26 NOT, 9 OFF) and the final label is the majority. Annotator A reported labelling mainly from his own understanding rather than the full rules. A sensitivity analysis with annotator A's labels alone is reported (H3 stays significant for Gemma and Qwen, not for Llama).
 
 **Contamination battery** ([artifacts/contam/contam_summary.md](artifacts/contam/contam_summary.md)), each on OLID train, OLID test and the new posts as a negative control: guided vs general completion, near-verbatim review, dataset-cue label probe, Min-K% Prob, Data Contamination Quiz.
 
@@ -61,7 +63,8 @@ Bluesky search, OLID's 8 keywords, May–Nov 2026   15,561 posts
 - **Not a pure contamination contrast:** the datasets also differ in platform (Twitter vs Bluesky), year and topics. A length-matched OLID subsample gives the same H1 result.
 - **Power:** H1 has roughly 35–40% power for its smallest effect; we can say "no detectable difference", not "no difference".
 - **Three minimal wordings:** the wording effect is a lower bound for real prompt variation.
-- **Gold labels from our team**, not OLID's annotators; this is why H2 cannot be interpreted.
+- **Gold labels from our team**, not OLID's annotators; this is why H2 cannot be interpreted. The guide's rules were LLM-drafted, and annotator A labelled mainly from his own understanding.
+- **Keyword sample:** results describe keyword-matched, mostly political posts, not Bluesky as a whole.
 - **Model identity** depends on the maKI service; Qwen 3.6 does not publish a training cut-off.
 
 ## Reproduce
@@ -77,6 +80,7 @@ Run from the repository root (`pip install -r requirements.txt`). Set secrets wi
 | 4 | Model runs on new posts | `python src/promptshift/prepare.py --stage fresh` then `python src/promptshift/run.py --stage fresh --all` | `ALL_REQUESTS_COMPLETE` |
 | 5 | Contamination battery | `python src/promptshift/contam.py prepare --groups olid_train olid_test fresh`, `run --part stage1 --groups ... --all`, `quiz-prepare`, `run --part quiz ...`, `minkprob --all`, `analyze` | `CONTAM_ANALYSIS_OK` |
 | 6 | Analysis | `python src/promptshift/analyze_v3.py` | `ANALYSIS_V3_OK` |
+| 7 | Dataset description and release files | `python src/promptshift/dataset_card.py describe` then `release` | `DESCRIBE_OK`, `RELEASE_OK` |
 
 OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If a run stops, rerun the same command: it resumes and never re-sends a finished request.
 
@@ -93,6 +97,10 @@ OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If 
 | Final presentation (with speaker notes) | [docs/PromptShift_v3_Final_Presentation.pptx](docs/PromptShift_v3_Final_Presentation.pptx) |
 | Report draft (ACL format, LaTeX + preview PDF) | [report/](report/) |
 | Midterm version | `main` branch |
+
+## Data availability
+
+The Bluesky post IDs (AT URIs and links), keyword, month and all labels (A, B, C, final) are submitted with the report; post texts go to the examiners only. Both files are produced by `dataset_card.py release` under `data/fresh/release/` (gitignored). Posts deleted by their authors can no longer be retrieved.
 
 ## Privacy and ethics
 

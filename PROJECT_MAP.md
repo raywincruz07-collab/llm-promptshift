@@ -109,6 +109,7 @@ Agreement with OLID's own labels on 100 OLID posts mixed in: kappa **0.43 and 0.
 |---|---|
 | 8-page visual overview (before/after, data, timeline, real example) | [docs/PromptShift_v3_Simple.pdf](docs/PromptShift_v3_Simple.pdf) |
 | References (checked) | [docs/references.md](docs/references.md) |
+| New dataset: collection, composition, labelling | [docs/DATA_CARD.md](docs/DATA_CARD.md), [artifacts/fresh/dataset_description.md](artifacts/fresh/dataset_description.md) |
 | Frozen plan, hypotheses, deviation log | [PLAN_v3.md](PLAN_v3.md) |
 | Results v3 (tables, figures) | [artifacts/results_v3](artifacts/results_v3) |
 | Contamination battery | [artifacts/contam/contam_summary.md](artifacts/contam/contam_summary.md) |
