@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-11-27T13:32:55.244441+00:00",
+  "endpoint": "https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts",
+  "n": 400,
+  "match": 396,
+  "status_counts": {
+    "match": 396,
+    "not found (deleted or hidden)": 4
+  }
+}

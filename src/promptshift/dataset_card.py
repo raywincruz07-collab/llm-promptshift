@@ -3,6 +3,8 @@
     python src/promptshift/dataset_card.py describe   # distribution tables, no text -> artifacts/fresh/
     python src/promptshift/dataset_card.py release    # IDs + labels, side-by-side sheet -> data/fresh/release/
     python src/promptshift/dataset_card.py reasons    # after the team fills the 'reason' column
+    python src/promptshift/dataset_card.py verify-ids # fetch all 400 posts by ID and check they match
+    python src/promptshift/dataset_card.py verify-ids --sample 3   # live demo: 3 random posts
 
 `describe` writes only counts (safe to commit). `release` writes post text and Bluesky IDs:
 those files stay under data/ (gitignored) and go to the course submission, not to GitHub.
@@ -12,7 +14,10 @@ Code drafted with AI assistance (Claude, Anthropic); the team reviewed it and is
 
 import argparse
 import csv
+import json
+import random
 import sys
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -20,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import config as C  # noqa: E402
 from annotate_fresh import GUIDE  # noqa: E402
+from collect_fresh import normalise_post  # noqa: E402
 from common import read_json, read_jsonl, utc_now, write_json  # noqa: E402
 
 FRESH_DIR = C.DATA_DIR / "fresh"
@@ -303,9 +309,67 @@ def reasons(path=RELEASE_DIR / SIDE_BY_SIDE, out_dir=OUT_DIR):
     return result
 
 
+# ------------------------------------------------------------------ verify-ids
+APPVIEW = "https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts"
+FULL_CSV = RELEASE_DIR / "bluesky2026_offensive_CONTAINS_TWEET_TEXT.csv"
+
+
+def fetch_posts(uris, opener=None, batch=25, delay=0.3):
+    """{uri: post view} from Bluesky's public API (no login needed). Missing = deleted or hidden."""
+    from urllib.parse import urlencode
+    from urllib.request import Request, urlopen
+
+    opener = opener or urlopen
+    found = {}
+    for i in range(0, len(uris), batch):
+        query = urlencode([("uris", u) for u in uris[i:i + batch]])
+        with opener(Request(f"{APPVIEW}?{query}", headers={"Accept": "application/json"}), timeout=60) as resp:
+            for post in json.loads(resp.read().decode("utf-8")).get("posts") or []:
+                found[post.get("uri")] = post
+        if delay and i + batch < len(uris):
+            time.sleep(delay)
+    return found
+
+
+def check_record(row, post):
+    if post is None:
+        return "not found (deleted or hidden)"
+    record = post.get("record") or {}
+    same_text = normalise_post(record.get("text") or "", record.get("facets")) == row["text"]
+    same_time = (record.get("createdAt") or "") == row["created_at"]
+    if same_text and same_time:
+        return "match"
+    return "text differs" if not same_text else "date differs"
+
+
+def verify_ids(full_csv=FULL_CSV, out_dir=OUT_DIR, release_dir=RELEASE_DIR, opener=None, sample=0, seed=None):
+    with open(full_csv, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    if sample:
+        rows = random.Random(seed).sample(rows, min(sample, len(rows)))
+    posts = fetch_posts([r["uri"] for r in rows], opener=opener)
+    status = [(r, check_record(r, posts.get(r["uri"]))) for r in rows]
+    if sample:
+        for r, st in status:
+            print(f"{r['item_id']}  {st:30s}  {r['url']}")
+        return {"sample": len(status), "match": sum(st == "match" for _, st in status)}
+    counts = {}
+    for _, st in status:
+        counts[st] = counts.get(st, 0) + 1
+    result = {"checked_utc": utc_now(), "endpoint": APPVIEW, "n": len(status),
+              "match": counts.get("match", 0), "status_counts": counts}
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    write_json(Path(out_dir) / "id_verification.json", result)
+    write_csv(Path(release_dir) / "id_verification.csv",
+              [{"item_id": r["item_id"], "url": r["url"], "status": st} for r, st in status],
+              ["item_id", "url", "status"])
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("step", choices=["describe", "release", "reasons"])
+    parser.add_argument("step", choices=["describe", "release", "reasons", "verify-ids"])
+    parser.add_argument("--sample", type=int, default=0, help="verify-ids: only N random posts, printed")
     args = parser.parse_args()
     if args.step == "describe":
         rows = load()
@@ -317,8 +381,10 @@ def main():
         print("DESCRIBE_OK ->", OUT_DIR / "dataset_description.md")
     elif args.step == "release":
         print("RELEASE_OK", release())
-    else:
+    elif args.step == "reasons":
         print("REASONS_OK", reasons())
+    else:
+        print("VERIFY_IDS_OK", verify_ids(sample=args.sample))
 
 
 if __name__ == "__main__":

@@ -79,3 +79,41 @@ def test_sheet_comments_are_read(tmp_path):
     wb.save(ann / "sheet_A.xlsx")
     rows = D.load(fresh, ann)
     assert all(r["comment_A"] == "because" for r in rows)
+
+
+class _Resp:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+    def read(self):
+        return json.dumps(self.payload).encode()
+
+
+def test_verify_ids_with_fake_api(tmp_path):
+    from urllib.parse import parse_qs, urlparse
+
+    fresh, ann = _fixture(tmp_path)
+    out = tmp_path / "release"
+    D.release(fresh, ann, out)
+    raw = {r["uri"]: r for r in (json.loads(l) for l in (fresh / "raw_pool.jsonl").read_text().splitlines())}
+    deleted = "at://did:plc:u0/app.bsky.feed.post/r0"
+
+    def opener(request, timeout=60):
+        uris = parse_qs(urlparse(request.full_url).query)["uris"]
+        posts = [{"uri": u, "record": {"text": raw[u]["text"], "createdAt": raw[u]["created_at"]}}
+                 for u in uris if u != deleted]
+        if posts:
+            posts[-1]["record"]["text"] += " edited"
+        return _Resp({"posts": posts})
+
+    res = D.verify_ids(out / "bluesky2026_offensive_CONTAINS_TWEET_TEXT.csv", tmp_path / "art", out, opener=opener)
+    assert res["n"] == 8 and res["match"] == 6
+    assert res["status_counts"]["not found (deleted or hidden)"] == 1
+    assert res["status_counts"]["text differs"] == 1
+    assert (out / "id_verification.csv").exists()

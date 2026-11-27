@@ -81,6 +81,7 @@ Run from the repository root (`pip install -r requirements.txt`). Set secrets wi
 | 5 | Contamination battery | `python src/promptshift/contam.py prepare --groups olid_train olid_test fresh`, `run --part stage1 --groups ... --all`, `quiz-prepare`, `run --part quiz ...`, `minkprob --all`, `analyze` | `CONTAM_ANALYSIS_OK` |
 | 6 | Analysis | `python src/promptshift/analyze_v3.py` | `ANALYSIS_V3_OK` |
 | 7 | Dataset description and release files | `python src/promptshift/dataset_card.py describe` then `release` | `DESCRIBE_OK`, `RELEASE_OK` |
+| 8 | Check the post IDs against Bluesky (no login) | `python src/promptshift/dataset_card.py verify-ids` (live demo: `--sample 3`) | `VERIFY_IDS_OK` (27 Nov: 396 match, 4 deleted, 0 differ) |
 
 OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If a run stops, rerun the same command: it resumes and never re-sends a finished request.
 
@@ -100,7 +101,7 @@ OLID runs (v2) use `--stage pilot` and `--stage main` with the same scripts. If 
 
 ## Data availability
 
-The Bluesky post IDs (AT URIs and links), keyword, month and all labels (A, B, C, final) are submitted with the report; post texts go to the examiners only. Both files are produced by `dataset_card.py release` under `data/fresh/release/` (gitignored). Posts deleted by their authors can no longer be retrieved.
+The Bluesky post IDs (AT URIs and links), keyword, month and all labels (A, B, C, final) are submitted with the report; post texts go to the examiners only. Both files are produced by `dataset_card.py release` under `data/fresh/release/` (gitignored). Posts deleted by their authors can no longer be retrieved. On 27 Nov 2026, 396 of the 400 IDs returned exactly our stored text and date; 4 posts had been deleted ([artifacts/fresh/id_verification.json](artifacts/fresh/id_verification.json)).
 
 ## Privacy and ethics
 

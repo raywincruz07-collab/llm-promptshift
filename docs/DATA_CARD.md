@@ -27,6 +27,8 @@
 
 Search results change over time (deleted posts, ranking), so a new run gives a similar but not identical pool. The released post IDs identify the exact posts.
 
+**ID check (27 Nov 2026):** all 400 IDs were fetched from Bluesky's public API (`dataset_card.py verify-ids`). 396 returned exactly our stored text and creation date; 4 had been deleted or hidden by their authors; 0 differed ([`artifacts/fresh/id_verification.json`](../artifacts/fresh/id_verification.json)).
+
 ## 2. Composition (main set, final labels)
 
 | Keyword | Posts | Offensive | Share |
@@ -58,7 +60,7 @@ Search results change over time (deleted posts, ranking), so a new run gives a s
 | Annotator shares | A 123 OFF (30.8%), B 90 OFF (22.5%), final 98 (24.5%) |
 | Against OLID's labels | 100 anchors: accuracy 0.78 (A), 0.77 (B); κ = 0.43 (A), 0.37 (B) |
 | Note | After labelling, annotator A reported relying mainly on his own understanding of offensive language rather than the full rules and examples |
-| Reasons for disagreement | The team categorises each of the 35 disagreements (`dataset_card.py reasons` → `artifacts/fresh/disagreement_reasons.json`) |
+| Reasons for disagreement | Criticism vs insult 14 · veiled or implicit insult 8 · quoted or reported offensive words 4 · sarcasm or irony 4 · context missing 3 · profanity not aimed at anyone 2. Drafted by an LLM (Claude) from the posts and the annotators' comments, reviewed by annotator A ([`artifacts/fresh/disagreement_reasons.json`](../artifacts/fresh/disagreement_reasons.json)) |
 
 No LLM produced any label.
 
